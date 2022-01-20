@@ -1,26 +1,5 @@
 {
-    "": "Outlet_Bed272",
-    "": "Inlet_Bed272",
-    "": "Outlet_Living273",
-    "": "Inlet_Living273",
-    "": "Outlet_Bed274",
-    "": "Inlet_Bed274",
-    "": "Outlet_WC275",
-    "": "Inlet_WC275",
-    "": "Outlet_WC276",
-    "": "Inlet_WC276",
-    "": "T_Bed272",
-    "": "Sol_Bed272",
-    "": "T_Living273",
-    "": "Sol_Living273",
-    "": "T_Bed274",
-    "": "Sol_Bed274",
-    "": "T_WC275",
-    "": "T_WC276",
-    "": "DH_supply_t",
-    "": "DH_return_temperature",
-    "": "DH_supply_flow",
-    "": "DC_supply_t",
-    "": "DC_return_temperature",
-    "": "DC_supply_flow"
-}
+    "R272_T": "T_Bed272",
+    "R273_T": "T_Living273",
+    "R274_T": "T_Bed274"
+    }

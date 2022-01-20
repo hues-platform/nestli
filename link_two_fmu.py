@@ -3,14 +3,14 @@ from fmpy.fmi2 import FMU2Slave
 from fmpy.util import plot_result
 import numpy as np
 import shutil
-import json
+from input_functions import create_dict_from_file, read_csv_files_in_folder
 
 START_TIME = 0
 STOP_TIME = 4*86400
 STEP_SIZE = 60
 
 
-def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1, variable_mapping_2):
+def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1, variable_mapping_2, variable_mapping_3, preprocess_input):
 
     # read the model description main_fmu
     main_model_description = read_model_description(main_filename)
@@ -60,9 +60,12 @@ def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1
         # value references as arguments and return lists of values
         for key, value in variable_mapping_1.items():
             main_fmu.setReal([vrs_main[key]], preprocess_fmu.getReal([vrs_preprocess[value]]))
-        
+
         for key, value in variable_mapping_2.items():
-            preprocess_fmu.setReal([vrs_preprocess[key]], main_fmu.getReal([vrs_preprocess[value]]))
+            preprocess_fmu.setReal([vrs_preprocess[key]], main_fmu.getReal([vrs_main[value]]))
+        
+        for key, value in variable_mapping_3.items():
+            preprocess_fmu.setReal([vrs_preprocess[key]], [preprocess_input.at[(int)(time/60), value]])
 
         # perform one step
         main_fmu.doStep(currentCommunicationPoint=time, communicationStepSize=STEP_SIZE)
@@ -71,9 +74,9 @@ def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1
         time += STEP_SIZE       
 
         # append the results
-        [DC_pump_flow] =  preprocess_fmu.getReal([vrs_preprocess["DC_pump_flow"]])
+        [Flow_R274_H] =  preprocess_fmu.getReal([vrs_preprocess["Flow_R274_H"]])
         [T_WC275] = main_fmu.getReal([vrs_main["T_WC275"]])
-        rows.append((time, DC_pump_flow, T_WC275))
+        rows.append((time, Flow_R274_H, T_WC275))
         
 
     main_fmu.terminate()
@@ -87,23 +90,21 @@ def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1
     shutil.rmtree(preprocess_unzipdir, ignore_errors=True)
 
     # convert the results to a structured NumPy array
-    result = np.array(rows, dtype=np.dtype([('time', np.float64), ('preprocess_DH_supply_flow', np.float64), ('main_T_WC275', np.float64)]))
+    result = np.array(rows, dtype=np.dtype([('time', np.float64), ('preprocess_Flow_R274_H', np.float64), ('main_T_WC275', np.float64)]))
 
     plot_result(result)
 
     return time
 
 
-def create_dict_from_file(filename):
-    with open(filename) as f:
-        data = f.read()
-    js = json.loads(data)
-    return js
+
 
 
 if __name__ == '__main__':
     fmu_filename_1 = 'UMAR.fmu'
     fmu_filename_2 = 'preprocess.fmu'
     mapping_dict_1 = create_dict_from_file("mapping_umar_from_preprocess.txt")
-    mapping_dict_2 = {}#create_dict_from_file("mapping_preprocess_from_umar.txt")
-    simulate_custom_input(fmu_filename_1, fmu_filename_2, mapping_dict_1, mapping_dict_2)
+    mapping_dict_2 = create_dict_from_file("mapping_preprocess_from_umar.txt")
+    mapping_dict_3 = create_dict_from_file("mapping_preprocess_from_data.txt")
+    preprocess_input = read_csv_files_in_folder("./inputs")
+    simulate_custom_input(fmu_filename_1, fmu_filename_2, mapping_dict_1, mapping_dict_2, mapping_dict_3, preprocess_input)

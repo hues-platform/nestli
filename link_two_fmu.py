@@ -101,10 +101,10 @@ def simulate_custom_input(main_filename, preprocess_filename, variable_mapping_1
 
 
 if __name__ == '__main__':
-    fmu_filename_1 = 'UMAR.fmu'
-    fmu_filename_2 = 'preprocess.fmu'
-    mapping_dict_1 = create_dict_from_file("mapping_umar_from_preprocess.txt")
-    mapping_dict_2 = create_dict_from_file("mapping_preprocess_from_umar.txt")
-    mapping_dict_3 = create_dict_from_file("mapping_preprocess_from_data.txt")
-    preprocess_input = read_csv_files_in_folder("./inputs")
+    fmu_filename_1 = './inputs/fmu/UMAR.fmu'
+    fmu_filename_2 = './inputs/fmu/preprocess.fmu'
+    mapping_dict_1 = create_dict_from_file("./inputs/mappings/mapping_umar_from_preprocess.txt")
+    mapping_dict_2 = create_dict_from_file("./inputs/mappings/mapping_preprocess_from_umar.txt")
+    mapping_dict_3 = create_dict_from_file("./inputs/mappings/mapping_preprocess_from_data.txt")
+    preprocess_input = read_csv_files_in_folder("./inputs/data")
     simulate_custom_input(fmu_filename_1, fmu_filename_2, mapping_dict_1, mapping_dict_2, mapping_dict_3, preprocess_input)

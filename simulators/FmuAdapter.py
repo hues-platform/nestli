@@ -9,11 +9,6 @@ from fmpy.fmi2 import FMU2Slave
 meta = {
     "type": "time-based",
     'models': {
-        "FmuModel": {
-            'public': True,
-            'params': ["Q"],
-            'attrs': ['Q', "TRooMea"],
-        }
     },
     'extra_methods': ['fmi_set', 'fmi_get']
 }
@@ -97,7 +92,7 @@ class FmuAdapter(mosaik_api.Simulator):
         
         self.adjust_var_table()  # Completing var_table and translation_table structure
         self.adjust_meta()  # Writing variable information into mosaik's meta
-
+        print(self.meta)
         return self.meta
 
     def create(self, num, model, **model_params):

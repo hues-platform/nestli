@@ -31,7 +31,7 @@ collector = world.start('Collector')
 
 
 # Instantiate model entities
-fmu_model = fmusim.FmuModel.create(1)
+fmu_model = fmusim.FMU_Instance.create(1)
 solar_data = DNIdata.Data.create(1)
 monitor = collector.Monitor()
 

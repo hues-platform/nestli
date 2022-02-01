@@ -14,5 +14,5 @@ def read_csv_files_in_folder(folder_path):
     for file in os.listdir(folder_path):
         filename = os.fsdecode(file)
         if filename.endswith(".csv"): 
-            output[filename.split(".")[0]] = pd.read_csv(os.path.join(folder_path, filename))
+            output[filename.split(".")[0]] = pd.read_csv(os.path.join(folder_path, filename), header=None)
     return output

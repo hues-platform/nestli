@@ -23,7 +23,7 @@ INPUT_DATA = "simulators/ressources/Q_data.csv"
 world = mosaik.World(sim_config, time_resolution=900)
 
 # Initialize the simulators
-fmusim = world.start('FMU', work_dir=os.path.join(os.getcwd(),"inputs/fmu"), fmu_name="test", model_name="FMU", instance_name="FMU_Instance")
+fmusim = world.start('FMU', work_dir=os.path.join(os.getcwd(),"inputs/fmu"), fmu_name="test", model_name="FMU", instance_name="FMU_Instance", stop_time=END)
 
 DNIdata = world.start('CSV', sim_start=START, datafile=INPUT_DATA)
 

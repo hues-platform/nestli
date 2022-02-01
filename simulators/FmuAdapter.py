@@ -5,6 +5,7 @@ import mosaik_api
 import simulators.parse_xml as parse_xml
 from fmpy import read_model_description, extract
 from fmpy.fmi2 import FMU2Slave
+from simulators.fmi_logging import get_callbacks_logger
 
 meta = {
     "type": "time-based",
@@ -42,9 +43,9 @@ class FmuAdapter(mosaik_api.Simulator):
         self._entities = {}
         self.eid_counters = {}
 
-    def init(self, sid, work_dir=None, fmu_name=None, model_name=None, instance_name=None, time_resolution=900, logging_on=False,
+    def init(self, sid, work_dir=None, fmu_name=None, model_name=None, instance_name=None, time_resolution=1, logging_on=False,
              step_factor=1.0, var_table=None, translation_table=None,
-             time_diff_resolution=1e-9, interactive=False, visible=False, stop_time_defined=False, stop_time=86400):
+             time_diff_resolution=1e-9, interactive=False, visible=False, stop_time_defined=False, stop_time=1):
 
         if work_dir is None or model_name is None or fmu_name is None or instance_name is None:
             raise RuntimeError("FMI Adapter has to be initialized with work_dir, fmu_name, model_name, instance_name!")
@@ -71,9 +72,7 @@ class FmuAdapter(mosaik_api.Simulator):
         # Extracting files from the .fmu (only needed at first use, but will not cause error later)
         path_to_fmu = os.path.join(self.work_dir, self.fmu_name + '.fmu')
         self.uri_to_extracted_fmu = extract(path_to_fmu, os.path.join(self.work_dir, self.fmu_name))
-        # if not self.uri_to_extracted_fmu:
-        #     self.uri_to_extracted_fmu = os.path.join(self.work_dir, self.fmu_name)
-
+        
         self.model_description = read_model_description(path_to_fmu)
         self.vrs = {}
         for variable in self.model_description.modelVariables:
@@ -92,7 +91,6 @@ class FmuAdapter(mosaik_api.Simulator):
         
         self.adjust_var_table()  # Completing var_table and translation_table structure
         self.adjust_meta()  # Writing variable information into mosaik's meta
-        print(self.meta)
         return self.meta
 
     def create(self, num, model, **model_params):
@@ -108,7 +106,8 @@ class FmuAdapter(mosaik_api.Simulator):
                     modelIdentifier=self.model_description.coSimulation.modelIdentifier,
                     instanceName=self.instance_name, fmiCallLogger=None)
             self._entities[eid] = fmu
-            self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on)
+            callbacks = get_callbacks_logger(self.logging_on)
+            self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
             self._entities[eid].setupExperiment(startTime=self.start_time, stopTime=self.stop_time)
             self._entities[eid].enterInitializationMode()
             self._entities[eid].exitInitializationMode()
@@ -136,7 +135,10 @@ class FmuAdapter(mosaik_api.Simulator):
                     
             return t + self.step_size
 
-    def finalize(self):
+    def finalize(self):        
+        for key, value in self._entities.items():
+            value.terminate()
+            value.freeInstance()
         shutil.rmtree(self.uri_to_extracted_fmu, ignore_errors=True)
         return super().finalize()
 
@@ -190,7 +192,7 @@ class FmuAdapter(mosaik_api.Simulator):
         '''Help function to get values from given variables of an FMU.'''
         attr = self.translation_table['output'][alt_attr]
         get_func = getattr(self._entities[eid], 'get' + self.var_table['output'][attr])
-        val = get_func([self.vrs[attr]])
+        [val] = get_func([self.vrs[attr]])
         return val
 
     def fmi_set(self, entity, var_name, value, var_type='input'):

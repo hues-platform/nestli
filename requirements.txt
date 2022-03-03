@@ -1,3 +1,0 @@
-mosaik
-pandas
-fmpy

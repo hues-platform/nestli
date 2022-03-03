@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest numpy
+        pip install flake8 pytest numpy Cython
         python setup.py install
     - name: Lint with flake8
       run: |

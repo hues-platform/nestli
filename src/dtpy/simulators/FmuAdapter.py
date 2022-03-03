@@ -2,10 +2,10 @@ import itertools
 import os
 import shutil
 import mosaik_api
-import simulators.parse_xml as parse_xml
+import dtpy.simulators.parse_xml as parse_xml
 from fmpy import read_model_description, extract
 from fmpy.fmi2 import FMU2Slave
-from simulators.fmi_logging import get_callbacks_logger
+from dtpy.simulators.fmi_logging import get_callbacks_logger
 
 meta = {
     "type": "time-based",

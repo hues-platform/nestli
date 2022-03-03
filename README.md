@@ -10,3 +10,6 @@ The model is calibrated on measurements that are collected at 1-minute intervals
 2. clone the repository onto you machine
 3. cd to the directory where you cloned it into
 4. run the command ```pip install -e . ``` This will install the dtpy package according to setup.py.
+
+## Usage
+A simple example of how to use the package is given in dtpy_example_run.py with the config example_config.yml.

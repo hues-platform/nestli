@@ -12,4 +12,4 @@ The model is calibrated on measurements that are collected at 1-minute intervals
 4. run the command ```pip install -e . ``` This will install the dtpy package according to setup.py.
 
 ## Usage
-A simple example of how to use the package is given in dtpy_example_run.py with the config example_config.yml.
+A simple example of how to use the package is given in the folder **example**. Just run the file dtpy_example_run.py where the config example_config.yml specifies parameters.

@@ -43,7 +43,7 @@ ENV TEMP=/tmp/
 
 COPY . . 
 
-RUN pip install -r requirements.txt
+RUN pip install -e .
 
-CMD ["python3", "mosaik_umar_simulation.py"]
+CMD ["python3", "example/dtpy_example_run.py"]
 

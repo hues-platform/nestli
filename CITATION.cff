@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  BAC-Bench: An open-source environment for
+  benchmarking building automation and control
+  systems
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Fazel
+    family-names: Khayatian
+    affiliation: >-
+      Swiss Federal Laboratories for Materials
+      Science and Technology-Empa
+  - given-names: Hanmin
+    family-names: Cai
+    affiliation: >-
+      Swiss Federal Laboratories for Materials
+      Science and Technology-Empa
+  - given-names: Aaron
+    family-names: Bojarski
+    affiliation: >-
+      Swiss Federal Laboratories for Materials
+      Science and Technology-Empa

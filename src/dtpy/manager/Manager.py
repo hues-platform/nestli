@@ -78,17 +78,14 @@ class Manager:
                 signal_drain = signal_drain[0]
             mapping_dict = create_dict_from_file(attributes["PATH"])
 
-            cyclic_dependency = (
-                attributes["FROM"] == "UMAR" and attributes["TO"] == "PREPROCESS"
-            )
-            if cyclic_dependency:
+            if "CIRCULAR_DEPENDENDY" in attributes and attributes["CIRCULAR_DEPENDENDY"]:
                 for key, value in mapping_dict.items():
                     self.world.connect(
                         signal_source,
                         signal_drain,
                         (value, key),
                         time_shifted=True,
-                        initial_data={value: 0.0},
+                        initial_data={value: attributes["INITIAL_VALUES"][key]},
                     )
             else:
                 for key, value in mapping_dict.items():

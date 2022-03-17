@@ -29,6 +29,13 @@ MAPPINGS:
     FROM: "UMAR"
     TO: "PREPROCESS"
     PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_umar.json"
+    CIRCULAR_DEPENDENDY: TRUE
+    INITIAL_VALUES:
+      R272_Simulated_Air_Temperature: 24.5669
+      R273_Simulated_Air_Temperature: 23.1496
+      R274_Simulated_Air_Temperature: 23.1496
+      R275_Simulated_Air_Temperature: 21.6
+      R276_Simulated_Air_Temperature: 21.6
   MAPPING2:
     FROM: "PREPROCESS"
     TO: "UMAR"

@@ -1,6 +1,7 @@
 import mosaik
+from pandas import DataFrame
 
-from dtpy.common.input_functions import create_dict_from_file
+from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory
 from dtpy.manager import MOSAIK_CONFIG
 from dtpy.common.config_loader import load_config, convert_entries_to_abs_pathes
 
@@ -34,11 +35,11 @@ class Manager:
                     instance_name=attributes["TYPE"] + "_Instance",
                     stop_time=self.cfg["END"],
                 )
-            elif attributes["TYPE"] == "CSV":
+            elif attributes["TYPE"] == "TABULAR_DATA":
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
                     sim_start=self.cfg["START"],
-                    datafile=attributes["PATH"],
+                    dataframe=build_data_frame_from_h5_directory(attributes["PATH"]),
                 )
             else:
                 simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"])
@@ -51,7 +52,7 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[
                     attributes["NAME"]
                 ].FMU_Instance.create(1)
-            elif attributes["TYPE"] == "CSV":
+            elif attributes["TYPE"] == "TABULAR_DATA":
                 models[attributes["NAME"]] = self.simulators[
                     attributes["NAME"]
                 ].Data.create(1)

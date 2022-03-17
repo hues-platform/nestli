@@ -1,13 +1,9 @@
-import pandas as pd
-
 import mosaik_api
-
-DATE_FORMAT = r'%Y-%m-%d %H:%M:%S'
 
 SENTINEL = object()
 
 
-class CSV(mosaik_api.Simulator):
+class TABULAR_DATA(mosaik_api.Simulator):
     def __init__(self):
         super().__init__({'models': {}})
         self.start_date = None
@@ -17,24 +13,12 @@ class CSV(mosaik_api.Simulator):
         self.sid = None
         self.eid = None
         
-    def init(self, sid, time_resolution, sim_start, datafile, date_format=DATE_FORMAT,
-             continuous=True):
+    def init(self, sid, time_resolution, sim_start, dataframe, continuous=True):
         self.sid = sid
-        self.time_res = pd.Timedelta(time_resolution, unit='seconds')
-        start_date = self.start_date = pd.to_datetime(sim_start, format=date_format)
-        self.next_date = self.start_date
+        self.time_resolution = time_resolution
 
-        # Check if first line is the header with column names (our attributes)
-        # or a model name:
-        with open(datafile) as f:
-            first_line = f.readline()
-        if len(first_line.split(',')) == 1:
-            header = 1
-        else:
-            header = 0
+        data = self.data = dataframe
 
-        data = self.data = pd.read_csv(datafile, index_col=0, parse_dates=True,
-                                       header=header)
         data.rename(columns=lambda x: x.strip(), inplace=True)
 
         self.attrs = [attr.strip() for attr in data.columns]
@@ -51,17 +35,7 @@ class CSV(mosaik_api.Simulator):
             'non-persistent': non_persistent,
         }
 
-        # Find first relevant value:
-        if continuous:
-            first_index = data.index.get_loc(start_date, method='ffill')
-            self.next_index = first_index
-        else:
-            first_index = data.index.get_loc(start_date, method='bfill')
-            first_date = data.index[first_index]
-            if first_date == start_date:
-                self.next_index = first_index
-            else:
-                self.next_index = -1
+        self.next_index = 0
 
         return self.meta
 
@@ -72,7 +46,7 @@ class CSV(mosaik_api.Simulator):
         if num > 1 or self.eid is not None:
             raise ValueError(f"Only one entity allowed for simulator {self.sid}.")
 
-        self.eid = 'csv-0'
+        self.eid = 'tabular_data-0'
         entities = [
             {'eid': self.eid,
              'type': model,
@@ -90,8 +64,7 @@ class CSV(mosaik_api.Simulator):
             self.cache = {}
         self.next_index += 1
         try:
-            next_date = self.data.index[self.next_index]
-            next_step = int((next_date - self.start_date)/self.time_res)
+            next_step = time + self.time_resolution
         except IndexError:
             next_step = max_advance
 
@@ -108,8 +81,8 @@ class CSV(mosaik_api.Simulator):
         if data:
             data = {self.eid: data}
 
-        if 'csv-1' in self.eid:
-            print('CSV: ', data)
+        if 'tabular_data-1' in self.eid:
+            print('TABULAR_DATA: ', data)
 
         return data
 

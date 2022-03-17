@@ -9,6 +9,8 @@ setup(name='dtpy',
         'pandas',
         'fmpy',
         'pytest',
-        'pyyaml'        
+        'pyyaml',
+        'tables',
+        'h5py'   
       ]
      )

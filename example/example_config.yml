@@ -14,8 +14,8 @@ SIMULATORS:
     PATH: "$DTPY$./simulators/ressources/fmu"
   SIM3:
     NAME: "DATA"
-    TYPE: "CSV"
-    PATH: "$DTPY$./simulators/ressources/data/all.csv"
+    TYPE: "TABULAR_DATA"
+    PATH: "$DTPY$./simulators/ressources/data"
   SIM4:
     NAME: "COLLECTOR"
     TYPE: "COLLECTOR"

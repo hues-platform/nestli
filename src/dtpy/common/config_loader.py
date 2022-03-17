@@ -17,7 +17,7 @@ def convert_entries_to_abs_pathes(config_dict: Dict[str, Any], basepath: str) ->
         else:
             if isinstance(value, str):
                 key_keywords = ["PATH", "FILE", "path", "file", "DIR", "dir", "FOLDER", "folder", "IDD"]
-                value_keywords = [".csv", ".idf", ".txt", ".xls", ".xlsx", ".epw", ".yml", ".fmu"]
+                value_keywords = [".csv", ".idf", ".txt", ".xls", ".xlsx", ".epw", ".yml", ".fmu", ".h5"]
                 if "REL" not in key and "rel" not in key:
                     if any(([True if keyword in key else False for keyword in key_keywords])) or any(([True if keyword in value else False for keyword in value_keywords])):
                         if "$DTPY$" in value:

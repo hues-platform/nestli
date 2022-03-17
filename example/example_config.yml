@@ -24,16 +24,16 @@ MAPPINGS:
   MAPPING1:
     FROM: "UMAR"
     TO: "PREPROCESS"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_umar.txt"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_umar.json"
   MAPPING2:
     FROM: "PREPROCESS"
     TO: "UMAR"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_umar_from_preprocess.txt"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_umar_from_preprocess.json"
   MAPPING3:
     FROM: "DATA"
     TO: "PREPROCESS"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_data.txt"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_data.json"
   MAPPING4:
     FROM: "UMAR"
     TO: "COLLECTOR"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_umar.txt"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_umar.json"

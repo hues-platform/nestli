@@ -3,7 +3,7 @@ import mosaik_api
 SENTINEL = object()
 
 
-class TABULAR_DATA(mosaik_api.Simulator):
+class TabularData(mosaik_api.Simulator):
     def __init__(self):
         super().__init__({'models': {}})
         self.start_date = None

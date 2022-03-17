@@ -17,6 +17,10 @@ SIMULATORS:
     TYPE: "TABULAR_DATA"
     PATH: "$DTPY$./simulators/ressources/data"
   SIM4:
+    NAME: "NanPlaceholder"
+    TYPE: "NAN_PLACEHOLDER"
+    PATH: "$DTPY$./simulators/ressources/data/override_variables.json"
+  SIM5:
     NAME: "COLLECTOR"
     TYPE: "COLLECTOR"
     PATH: ""
@@ -37,3 +41,7 @@ MAPPINGS:
     FROM: "UMAR"
     TO: "COLLECTOR"
     PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_umar.json"
+  MAPPING5:
+    FROM: "NanPlaceholder"
+    TO: "PREPROCESS"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_nan.json"

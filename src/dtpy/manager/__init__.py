@@ -1,5 +1,6 @@
 MOSAIK_CONFIG = {
     "FMU": {"python": "dtpy.simulators.FmuAdapter:FmuAdapter"},
-    "TABULAR_DATA": {"python": "dtpy.simulators.tabular_data_sim_pandas:TABULAR_DATA"},
+    "TABULAR_DATA": {"python": "dtpy.simulators.TabularDataSimPandas:TabularData"},
     "COLLECTOR": {"python": "dtpy.simulators.Collector:Collector"},
+    "NAN_PLACEHOLDER": {"python": "dtpy.simulators.NanPlaceholder:NanPlaceholder"},
 }

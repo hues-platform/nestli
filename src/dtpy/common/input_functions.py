@@ -10,6 +10,10 @@ def create_dict_from_file(filename):
     js = json.loads(data)
     return js
 
+def load_list_from_file(filename):
+    with open(filename) as f:
+        return json.load(f)
+
 def build_data_frame_from_h5_directory(directory):
     output = pd.DataFrame()
     for file in os.listdir(directory):

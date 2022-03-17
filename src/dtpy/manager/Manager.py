@@ -1,7 +1,6 @@
 import mosaik
-from pandas import DataFrame
 
-from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory
+from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG
 from dtpy.common.config_loader import load_config, convert_entries_to_abs_pathes
 
@@ -41,6 +40,11 @@ class Manager:
                     sim_start=self.cfg["START"],
                     dataframe=build_data_frame_from_h5_directory(attributes["PATH"]),
                 )
+            elif attributes["TYPE"] == "NAN_PLACEHOLDER":
+                simulators[attributes["NAME"]] = self.world.start(
+                    attributes["TYPE"],
+                    attributes=load_list_from_file(attributes["PATH"]),
+                )
             else:
                 simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"])
         return simulators
@@ -56,6 +60,10 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[
                     attributes["NAME"]
                 ].Data.create(1)
+            elif attributes["TYPE"] == "NAN_PLACEHOLDER":
+                models[attributes["NAME"]] = self.simulators[
+                    attributes["NAME"]
+                ].NaN.create(1)
             else:
                 models[attributes["NAME"]] = self.simulators[
                     attributes["NAME"]

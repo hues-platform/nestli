@@ -1,5 +1,5 @@
-# DTpy
-DTpy is a co-simulation environment for benchmarking the performance of BACS (building automation and control systems). In its core, DTpy is a calibrated EnergyPlus model of the living lab UMAR (urban mining and recycling) at NEST, Empa. see: https://www.empa.ch/web/nest/urban-mining
+# BAC-Bench
+BAC-Bench is a co-simulation environment for benchmarking the performance of BACS (building automation and control systems). In its core, BAC-Bench is a calibrated EnergyPlus model of the living lab UMAR (urban mining and recycling) at NEST, Empa. see: https://www.empa.ch/web/nest/urban-mining
 
 The calibrated EnergyPlus model is wrapped into an FMU (fucntional mock-up unit) using the EnergyPlusToFMU tool. see: https://simulationresearch.lbl.gov/fmu/EnergyPlus/export/
 

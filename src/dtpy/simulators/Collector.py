@@ -8,13 +8,13 @@ import mosaik_api
 
 
 META = {
-    'type': 'event-based',
-    'models': {
-        'Monitor': {
-            'public': True,
-            'any_inputs': True,
-            'params': [],
-            'attrs': [],
+    "type": "event-based",
+    "models": {
+        "Monitor": {
+            "public": True,
+            "any_inputs": True,
+            "params": [],
+            "attrs": [],
         },
     },
 }
@@ -24,18 +24,17 @@ class Collector(mosaik_api.Simulator):
     def __init__(self):
         super().__init__(META)
         self.eid = None
-        self.data = collections.defaultdict(lambda:
-                                            collections.defaultdict(dict))
+        self.data = collections.defaultdict(lambda: collections.defaultdict(dict))
 
     def init(self, sid, time_resolution):
         return self.meta
 
     def create(self, num, model):
         if num > 1 or self.eid is not None:
-            raise RuntimeError('Can only create one instance of Monitor.')
+            raise RuntimeError("Can only create one instance of Monitor.")
 
-        self.eid = 'Monitor'
-        return [{'eid': self.eid, 'type': model}]
+        self.eid = "Monitor"
+        return [{"eid": self.eid, "type": model}]
 
     def step(self, time, inputs, max_advance):
         data = inputs.get(self.eid, {})
@@ -46,9 +45,8 @@ class Collector(mosaik_api.Simulator):
         return None
 
     def finalize(self):
-        print('Collected data:')
+        print("Collected data:")
         for sim, sim_data in sorted(self.data.items()):
-            print('- %s:' % sim)
+            print("- %s:" % sim)
             for attr, values in sorted(sim_data.items()):
-                print('  - %s: %s' % (attr, values))
-
+                print("  - %s: %s" % (attr, values))

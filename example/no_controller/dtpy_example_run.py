@@ -3,6 +3,7 @@ from dtpy.common.config_loader import abs_path
 
 import os
 
+
 def __abs_path(path):
     return abs_path(path, os.path.abspath(__file__))
 

@@ -1,0 +1,5 @@
+{
+    "sup_lim": "SetPoint_UpperBound",
+    "inf_lim": "SetPoint_LowerBound",
+    "AC_mode": "AirConditioning_Mode"
+}

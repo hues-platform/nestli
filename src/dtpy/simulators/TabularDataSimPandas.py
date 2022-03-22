@@ -5,14 +5,14 @@ SENTINEL = object()
 
 class TabularData(mosaik_api.Simulator):
     def __init__(self):
-        super().__init__({'models': {}})
+        super().__init__({"models": {}})
         self.start_date = None
         self.data = None
         self.attrs = None
         self.cache = None
         self.sid = None
         self.eid = None
-        
+
     def init(self, sid, time_resolution, sim_start, dataframe, continuous=True):
         self.sid = sid
         self.time_resolution = time_resolution
@@ -23,16 +23,16 @@ class TabularData(mosaik_api.Simulator):
 
         self.attrs = [attr.strip() for attr in data.columns]
 
-        self.meta['type'] = 'hybrid'
+        self.meta["type"] = "hybrid"
         if continuous:
             non_persistent = []
         else:
             non_persistent = True
-        self.meta['models']['Data'] = {
-            'public': True,
-            'params': [],
-            'attrs': self.attrs,
-            'non-persistent': non_persistent,
+        self.meta["models"]["Data"] = {
+            "public": True,
+            "params": [],
+            "attrs": self.attrs,
+            "non-persistent": non_persistent,
         }
 
         self.next_index = 0
@@ -40,18 +40,20 @@ class TabularData(mosaik_api.Simulator):
         return self.meta
 
     def create(self, num, model):
-        if model != 'Data':
+        if model != "Data":
             raise ValueError('Invalid model "%s" % model')
 
         if num > 1 or self.eid is not None:
             raise ValueError(f"Only one entity allowed for simulator {self.sid}.")
 
-        self.eid = 'tabular_data-0'
+        self.eid = "tabular_data-0"
         entities = [
-            {'eid': self.eid,
-             'type': model,
-             'rel': [],
-            }]
+            {
+                "eid": self.eid,
+                "type": model,
+                "rel": [],
+            }
+        ]
 
         return entities
 
@@ -81,9 +83,7 @@ class TabularData(mosaik_api.Simulator):
         if data:
             data = {self.eid: data}
 
-        if 'tabular_data-1' in self.eid:
-            print('TABULAR_DATA: ', data)
+        if "tabular_data-1" in self.eid:
+            print("TABULAR_DATA: ", data)
 
         return data
-
-

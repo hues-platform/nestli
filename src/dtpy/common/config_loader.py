@@ -6,7 +6,7 @@ from typing import Dict, Any, Union
 
 def load_config(cfg_file_name) -> Dict[str, Any]:
     with open(cfg_file_name, "r", encoding="utf-8") as ymlfile:
-        cfg = yaml.load(ymlfile, Loader=yaml.SafeLoader)        
+        cfg = yaml.load(ymlfile, Loader=yaml.SafeLoader)
     return cfg
 
 
@@ -35,4 +35,3 @@ def abs_path(path: Union[str, Path], basepath: Union[str, Path]) -> str:
         if os.path.isfile(basepath):
             basepath = os.path.abspath(os.path.dirname(basepath))
         return str(basepath / Path(path))
-

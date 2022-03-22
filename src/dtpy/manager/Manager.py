@@ -12,9 +12,7 @@ class Manager:
         self.mosaik_cfg = MOSAIK_CONFIG
 
     def build_simulation(self):
-        self.world = mosaik.World(
-            self.mosaik_cfg, time_resolution=self.cfg["RESOLUTION"]
-        )
+        self.world = mosaik.World(self.mosaik_cfg, time_resolution=self.cfg["RESOLUTION"])
         self.simulators = self.initialize_simulators()
         self.models = self.initialize_models()
         self.connect_signals()
@@ -53,21 +51,13 @@ class Manager:
         models = {}
         for sim, attributes in self.cfg["SIMULATORS"].items():
             if attributes["TYPE"] == "FMU":
-                models[attributes["NAME"]] = self.simulators[
-                    attributes["NAME"]
-                ].FMU_Instance.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].FMU_Instance.create(1)
             elif attributes["TYPE"] == "TABULAR_DATA":
-                models[attributes["NAME"]] = self.simulators[
-                    attributes["NAME"]
-                ].Data.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(1)
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
-                models[attributes["NAME"]] = self.simulators[
-                    attributes["NAME"]
-                ].NaN.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(1)
             else:
-                models[attributes["NAME"]] = self.simulators[
-                    attributes["NAME"]
-                ].Monitor()
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
         return models
 
     def connect_signals(self):

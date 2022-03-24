@@ -8,13 +8,15 @@ The model is calibrated on measurements that are collected at 1-minute intervals
 ## Installation
 #### Energyplus
 1. Install Energyplus 9.3.0
-2. Add to your PATH
+2. Add it to your PATH
 
 #### Python
-1. Activate your virtual environment you plan to use
-2. clone the repository onto you machine
-3. cd to the directory where you cloned it into
-4. run the command ```pip install -e . ``` This will install the dtpy package according to setup.py.
+1. Install python version 3.8 or higher.
+2. Create a virtual environment: ```python -m venv path/to/env/dtpy-venv```
+3. Activate the environment.
+4. Clone the repository onto you machine
+5. cd to the directory where you cloned it into
+6. Install the package with: ```pip install -e . ``` This will install the dtpy package according to setup.py.
 
 ## Usage
-A simple example of how to use the package is given in the **example** folder. Just run the file dtpy_example_run.py where the config example_config.yml specifies parameters.
+A simple example of how to use the package is given in the **example** folder. Just run the file dtpy_example_run.py where the config example_config.yml specifies all the parameters.

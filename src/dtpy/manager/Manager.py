@@ -70,11 +70,11 @@ class Manager:
             signal_source_list = self.models[attributes["FROM"]]
             signal_drain_list = self.models[attributes["TO"]]
 
-            source_index = attributes["FROM_INDEX"] if ("FROM_INDEX" in attributes) else 0            
+            source_index = attributes["FROM_INDEX"] if ("FROM_INDEX" in attributes) else 0
             drain_index = attributes["TO_INDEX"] if ("TO_INDEX" in attributes) else 0
 
             signal_source = signal_source_list[source_index]
-            signal_drain = signal_drain_list if (attributes["TO"] == "COLLECTOR") else signal_drain_list[drain_index]            
+            signal_drain = signal_drain_list if (attributes["TO"] == "COLLECTOR") else signal_drain_list[drain_index]
 
             mapping_dict = create_dict_from_file(attributes["PATH"])
 

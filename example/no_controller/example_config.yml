@@ -1,7 +1,18 @@
-OUTPUT_FOLDER_PATH: "./"
+# The following are general parameters for the simulation. 
+# Make sure that the RESOLUTION is the same as in your models.
 START: '2020-01-01 00:00:00'
 END: 86400
 RESOLUTION: 60
+
+# The Simulators specify all the models in the simulation. Currently the following simulators are available:
+#   FMU:  This will create a simulator from an FMU. 
+#         PATH specifies the folder where the FMU is contained and NAME the filename.
+#   TABULAR_DATA: This will create a simulator from DATA in tabular form. The supported format is hdf5.
+#         PATH specifies the folder where the .h5 files are contained. The file name must correspond with the variable name of the data it containes.
+#   NAN_PLACEHOLDER: This simulator will create a NaN value to all connected entities.
+#         PATH specifies a file which containes all the variables you plan to connect to it.      
+#   COLLECTOR: This is a simple Data collector. It will save the data of all signals you connect to it and print them after the simulation.
+#         No additional information is neccessary.
 SIMULATORS: 
   SIM1:
     NAME: "UMAR"
@@ -23,6 +34,10 @@ SIMULATORS:
     NAME: "COLLECTOR"
     TYPE: "COLLECTOR"
     PATH: ""
+
+# The mappings define all the connection between the different models.
+# For each pair of models that are connected you need to create a mapping and define the connected variables in a seperate file.
+# See below how circular dependencies are handled.
 MAPPINGS:
   MAPPING1:
     FROM: "UMAR"

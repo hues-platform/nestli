@@ -1,4 +1,5 @@
 import mosaik
+from numpy import source
 
 from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG
@@ -50,22 +51,31 @@ class Manager:
     def initialize_models(self):
         models = {}
         for sim, attributes in self.cfg["SIMULATORS"].items():
+            if "NUMBER_OF_MODELS" in attributes:
+                num_of_models = attributes["NUMBER_OF_MODELS"]
+            else:
+                num_of_models = 1
             if attributes["TYPE"] == "FMU":
-                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].FMU_Instance.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].FMU_Instance.create(num_of_models)
             elif attributes["TYPE"] == "TABULAR_DATA":
-                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(num_of_models)
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
-                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(1)
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(num_of_models)
             else:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
         return models
 
     def connect_signals(self):
         for mapping, attributes in self.cfg["MAPPINGS"].items():
-            signal_source = self.models[attributes["FROM"]][0]
-            signal_drain = self.models[attributes["TO"]]
-            if not attributes["TO"] == "COLLECTOR":
-                signal_drain = signal_drain[0]
+            signal_source_list = self.models[attributes["FROM"]]
+            signal_drain_list = self.models[attributes["TO"]]
+
+            source_index = attributes["FROM_INDEX"] if ("FROM_INDEX" in attributes) else 0            
+            drain_index = attributes["TO_INDEX"] if ("TO_INDEX" in attributes) else 0
+
+            signal_source = signal_source_list[source_index]
+            signal_drain = signal_drain_list if (attributes["TO"] == "COLLECTOR") else signal_drain_list[drain_index]            
+
             mapping_dict = create_dict_from_file(attributes["PATH"])
 
             if "CIRCULAR_DEPENDENDY" in attributes and attributes["CIRCULAR_DEPENDENDY"]:

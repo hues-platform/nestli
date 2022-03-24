@@ -1,7 +1,6 @@
 OUTPUT_FOLDER_PATH: "./"
 START: '2020-01-01 00:00:00'
-END: 2592000
-DURATION: 2592000
+END: 86400
 RESOLUTION: 60
 SIMULATORS: 
   SIM1:
@@ -24,6 +23,7 @@ SIMULATORS:
     NAME: "P_CTRL"
     TYPE: "FMU"
     PATH: ""
+    NUMBER_OF_MODELS: 5
   SIM5:
     NAME: "COLLECTOR"
     TYPE: "COLLECTOR"
@@ -60,16 +60,91 @@ MAPPINGS:
     PATH: "mapping_preprocess_from_nan.json"
   MAPPING6:
     FROM: "P_CTRL"
+    FROM_INDEX: 0
     TO: "PREPROCESS"
-    PATH: "mapping_preprocess_from_p_ctrl.json"
+    PATH: "mapping_preprocess_from_p_ctrl0.json"
   MAPPING7:
     FROM: "DATA"
     TO: "P_CTRL"
+    TO_INDEX: 0
     PATH: "mapping_p_ctrl_from_data.json"
   MAPPING8:
     FROM: "UMAR"
     TO: "P_CTRL"
-    PATH: "mapping_p_ctrl_from_umar.json"
+    TO_INDEX: 0
+    PATH: "mapping_p_ctrl0_from_umar.json"
     CIRCULAR_DEPENDENDY: TRUE
     INITIAL_VALUES:
       Air_T: 24.5669
+  MAPPING9:
+    FROM: "P_CTRL"
+    FROM_INDEX: 1
+    TO: "PREPROCESS"
+    PATH: "mapping_preprocess_from_p_ctrl1.json"
+  MAPPING10:
+    FROM: "DATA"
+    TO: "P_CTRL"
+    TO_INDEX: 1
+    PATH: "mapping_p_ctrl_from_data.json"
+  MAPPING11:
+    FROM: "UMAR"
+    TO: "P_CTRL"
+    TO_INDEX: 1
+    PATH: "mapping_p_ctrl1_from_umar.json"
+    CIRCULAR_DEPENDENDY: TRUE
+    INITIAL_VALUES:
+      Air_T: 23.1496
+  MAPPING12:
+    FROM: "P_CTRL"
+    FROM_INDEX: 2
+    TO: "PREPROCESS"
+    PATH: "mapping_preprocess_from_p_ctrl2.json"
+  MAPPING13:
+    FROM: "DATA"
+    TO: "P_CTRL"
+    TO_INDEX: 2
+    PATH: "mapping_p_ctrl_from_data.json"
+  MAPPING14:
+    FROM: "UMAR"
+    TO: "P_CTRL"
+    TO_INDEX: 2
+    PATH: "mapping_p_ctrl2_from_umar.json"
+    CIRCULAR_DEPENDENDY: TRUE
+    INITIAL_VALUES:
+      Air_T: 23.1496
+  MAPPING15:
+    FROM: "P_CTRL"
+    FROM_INDEX: 3
+    TO: "PREPROCESS"
+    PATH: "mapping_preprocess_from_p_ctrl3.json"
+  MAPPING16:
+    FROM: "DATA"
+    TO: "P_CTRL"
+    TO_INDEX: 3
+    PATH: "mapping_p_ctrl_from_data.json"
+  MAPPING17:
+    FROM: "UMAR"
+    TO: "P_CTRL"
+    TO_INDEX: 3
+    PATH: "mapping_p_ctrl3_from_umar.json"
+    CIRCULAR_DEPENDENDY: TRUE
+    INITIAL_VALUES:
+      Air_T: 21.6
+  MAPPING18:
+    FROM: "P_CTRL"
+    FROM_INDEX: 4
+    TO: "PREPROCESS"
+    PATH: "mapping_preprocess_from_p_ctrl4.json"
+  MAPPING19:
+    FROM: "DATA"
+    TO: "P_CTRL"
+    TO_INDEX: 4
+    PATH: "mapping_p_ctrl_from_data.json"
+  MAPPING20:
+    FROM: "UMAR"
+    TO: "P_CTRL"
+    TO_INDEX: 4
+    PATH: "mapping_p_ctrl4_from_umar.json"
+    CIRCULAR_DEPENDENDY: TRUE
+    INITIAL_VALUES:
+      Air_T: 21.6

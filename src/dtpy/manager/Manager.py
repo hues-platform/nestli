@@ -1,6 +1,4 @@
 import mosaik
-from numpy import source
-from tables import Unknown
 
 from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG

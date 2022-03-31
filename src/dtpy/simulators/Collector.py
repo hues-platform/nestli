@@ -52,9 +52,6 @@ class Collector(mosaik_api.Simulator):
             print(os.path.join(self.output_folder, sim + "_output.csv"))
             sim_df = pd.DataFrame()
             for attr, values in sorted(sim_data.items()):
-               var_df = pd.DataFrame.from_dict(values, orient='index', columns=[attr])
-               sim_df = pd.concat([sim_df, var_df], axis=1)
-            sim_df.to_csv(os.path.join(self.output_folder, sim + "_output.csv"))  
-
-
-
+                var_df = pd.DataFrame.from_dict(values, orient="index", columns=[attr])
+                sim_df = pd.concat([sim_df, var_df], axis=1)
+            sim_df.to_csv(os.path.join(self.output_folder, sim + "_output.csv"))

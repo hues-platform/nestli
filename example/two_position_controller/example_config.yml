@@ -148,3 +148,28 @@ MAPPINGS:
     CIRCULAR_DEPENDENDY: TRUE
     INITIAL_VALUES:
       Air_T: 21.6
+  MAPPING21:
+    FROM: "P_CTRL"
+    FROM_INDEX: 0
+    TO: "COLLECTOR"
+    PATH: "mapping_preprocess_from_p_ctrl0.json"
+  MAPPING22:
+    FROM: "P_CTRL"
+    FROM_INDEX: 1
+    TO: "COLLECTOR"
+    PATH: "mapping_preprocess_from_p_ctrl1.json"
+  MAPPING23:
+    FROM: "P_CTRL"
+    FROM_INDEX: 2
+    TO: "COLLECTOR"
+    PATH: "mapping_preprocess_from_p_ctrl2.json"
+  MAPPING24:
+    FROM: "P_CTRL"
+    FROM_INDEX: 3
+    TO: "COLLECTOR"
+    PATH: "mapping_preprocess_from_p_ctrl3.json"
+  MAPPING25:
+    FROM: "P_CTRL"
+    FROM_INDEX: 4
+    TO: "COLLECTOR"
+    PATH: "mapping_preprocess_from_p_ctrl4.json"

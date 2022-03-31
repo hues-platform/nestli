@@ -1,5 +1,6 @@
 import mosaik
 from numpy import source
+from tables import Unknown
 
 from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG
@@ -44,8 +45,10 @@ class Manager:
                     attributes["TYPE"],
                     attributes=load_list_from_file(attributes["PATH"]),
                 )
+            elif attributes["TYPE"] == "COLLECTOR":
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
             else:
-                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"])
+                raise NotImplementedError("The Simulator %s has not been implemented." % attributes["TYPE"])
         return simulators
 
     def initialize_models(self):

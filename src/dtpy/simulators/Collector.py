@@ -3,7 +3,8 @@ A simple data collector that prints all data when the simulation finishes.
 
 """
 import collections
-
+import os
+import pandas as pd
 import mosaik_api
 
 
@@ -26,7 +27,8 @@ class Collector(mosaik_api.Simulator):
         self.eid = None
         self.data = collections.defaultdict(lambda: collections.defaultdict(dict))
 
-    def init(self, sid, time_resolution):
+    def init(self, sid, time_resolution, output_folder):
+        self.output_folder = output_folder
         return self.meta
 
     def create(self, num, model):
@@ -45,8 +47,14 @@ class Collector(mosaik_api.Simulator):
         return None
 
     def finalize(self):
-        print("Collected data:")
+        print("Collected data saved at:")
         for sim, sim_data in sorted(self.data.items()):
-            print("- %s:" % sim)
+            print(os.path.join(self.output_folder, sim + "_output.csv"))
+            sim_df = pd.DataFrame()
             for attr, values in sorted(sim_data.items()):
-                print("  - %s: %s" % (attr, values))
+               var_df = pd.DataFrame.from_dict(values, orient='index', columns=[attr])
+               sim_df = pd.concat([sim_df, var_df], axis=1)
+            sim_df.to_csv(os.path.join(self.output_folder, sim + "_output.csv"))  
+
+
+

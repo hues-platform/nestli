@@ -1,0 +1,50 @@
+{
+    "DryBulb_Temperature": "DryBulb_Temperature",
+    "DewPoint_Temperature": "DewPoint_Temperature",
+    "Relative_Humidity": "Relative_Humidity",
+    "Diffuse_SolarRadiation": "Diffuse_SolarRadiation",
+    "Direct_SolarRadiation": "Direct_SolarRadiation",
+    "Wind_Speed": "Wind_Speed",
+    "Wind_Direction": "Wind_Direction",
+
+    "R272_Occupancy": "R272_Occupancy",
+    "R273_Occupancy": "R273_Occupancy",
+    "R274_Occupancy": "R274_Occupancy",
+
+    "R272_Heating_Flow": "R272_Heating_Flow",
+    "R272_Cooling_Flow": "R272_Cooling_Flow",
+
+    "R273_Heating_Flow": "R273_Heating_Flow",
+    "R273_Cooling_Flow": "R273_Cooling_Flow",
+
+    "R274_Heating_Flow": "R274_Heating_Flow",
+    "R274_Cooling_Flow": "R274_Cooling_Flow",
+
+    "R275_Heating_Flow": "R275_Heating_Flow",
+    "R275_Cooling_Flow": "R275_Cooling_Flow",
+
+    "R276_Heating_Flow": "R276_Heating_Flow",
+    "R276_Cooling_Flow": "R276_Cooling_Flow",
+
+    "DistrictHeating_Flow": "DistrictHeating_Flow",
+    "DistrictCooling_Flow": "DistrictCooling_Flow",
+
+    "R272_Shade": "R272_Shade",
+    "R273_Shade": "R273_Shade",
+    "R274_Shade": "R274_Shade",
+    "R272_Window": "R272_Window",
+    "R273_Window1": "R273_Window1",
+    "R273_Window2": "R273_Window2",
+    "R274_Window": "R274_Window",
+    
+    "R272_Setpoint_Temperature": "R272_Setpoint_Temperature",
+    "R273_Setpoint_Temperature": "R273_Setpoint_Temperature",
+    "R274_Setpoint_Temperature": "R274_Setpoint_Temperature",
+    "R275_Setpoint_Temperature": "R275_Setpoint_Temperature",
+    "R276_Setpoint_Temperature": "R276_Setpoint_Temperature",
+
+    "DistrictHeating_Temperature": "DistrictHeating_Temperature",
+    "DistrictCooling_Temperature": "DistrictCooling_Temperature",
+    "DistrictHeating_Switch": "DistrictHeating_Switch",
+    "DistrictCooling_Switch": "DistrictCooling_Switch"
+}

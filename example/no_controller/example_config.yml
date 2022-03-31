@@ -1,7 +1,8 @@
 # The following are general parameters for the simulation. 
 # Make sure that the RESOLUTION is the same as in your models.
+OUTPUT_FOLDER_PATH: ""
 START: '2020-01-01 00:00:00'
-END: 86400
+END: 12960000
 RESOLUTION: 60
 
 # The Simulators specify all the models in the simulation. Currently the following simulators are available:
@@ -59,9 +60,9 @@ MAPPINGS:
     TO: "PREPROCESS"
     PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_data.json"
   MAPPING4:
-    FROM: "UMAR"
+    FROM: "PREPROCESS"
     TO: "COLLECTOR"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_umar.json"
+    PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_preprocess.json"
   MAPPING5:
     FROM: "NanPlaceholder"
     TO: "PREPROCESS"

@@ -13,7 +13,7 @@ class TabularData(mosaik_api.Simulator):
         self.sid = None
         self.eid = None
 
-    def init(self, sid, time_resolution, sim_start, dataframe, continuous=True):
+    def init(self, sid, time_resolution, start_time, dataframe, continuous=True):
         self.sid = sid
         self.time_resolution = time_resolution
 
@@ -35,7 +35,7 @@ class TabularData(mosaik_api.Simulator):
             "non-persistent": non_persistent,
         }
 
-        self.next_index = 0
+        self.next_index = start_time / time_resolution
 
         return self.meta
 

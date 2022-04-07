@@ -1,0 +1,269 @@
+# The following are general parameters for the simulation. 
+# Make sure that the RESOLUTION is the same as in your models.
+START: '2020-01-01 00:00:00'
+END: 86400
+RESOLUTION: 60
+
+# The Simulators specify all the models in the simulation. Currently the following simulators are available:
+#   FMU:  This will create a simulator from an FMU. 
+#         PATH specifies the folder where the FMU is contained and NAME the filename.
+#   TABULAR_DATA: This will create a simulator from DATA in tabular form. The supported format is hdf5.
+#         PATH specifies the folder where the .h5 files are contained. The file name must correspond with the variable name of the data it containes.
+#   NAN_PLACEHOLDER: This simulator will create a NaN value to all connected entities.
+#         PATH specifies a file which containes all the variables you plan to connect to it.      
+#   COLLECTOR: This is a simple Data collector. It will save the data of all signals you connect to it and print them after the simulation.
+#         No additional information is neccessary.
+SIMULATORS: 
+  SIM1:
+    NAME: "UMAR"
+    TYPE: "FMU"
+    PATH: "$DTPY$./simulators/ressources/fmu"
+  SIM2:
+    NAME: "PREPROCESS"
+    TYPE: "FMU"
+    PATH: "$DTPY$./simulators/ressources/fmu"
+  SIM3:
+    NAME: "DATA"
+    TYPE: "TABULAR_DATA"
+    PATH: "$DTPY$./simulators/ressources/data"
+  SIM4:
+    NAME: "NanPlaceholder"
+    TYPE: "NAN_PLACEHOLDER"
+    PATH: "$DTPY$./simulators/ressources/data/override_variables.json"
+  SIM5:
+    NAME: "COLLECTOR"
+    TYPE: "COLLECTOR"
+    PATH: ""
+  SIM6:
+    NAME: "P_CTRL"
+    TYPE: "FMU"
+    PATH: ""
+    NUMBER_OF_MODELS: 5
+
+# The mappings define all the connection between the different models.
+# For each pair of models that are connected you need to create a mapping and define the connected variables in a seperate file.
+# See below how circular dependencies are handled.
+MAPPINGS:
+  SIGNALS_OUTGOING_FROM_UMAR:
+    FROM: "UMAR"
+    MAPPINGS:
+      MAPPING1:
+        TO: "P_CTRL"
+        INDEX: 0
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          Air_T: 24.5669
+        VARIABLES:    
+          R272_Simulated_Air_Temperature: "Air_T"
+      MAPPING2:
+        TO: "P_CTRL"
+        INDEX: 1
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          Air_T: 23.1496
+        VARIABLES:    
+          R273_Simulated_Air_Temperature: "Air_T"
+      MAPPING3:
+        TO: "P_CTRL"
+        INDEX: 2
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          Air_T: 23.1496
+        VARIABLES:    
+          R274_Simulated_Air_Temperature: "Air_T"
+      MAPPING4:
+        TO: "P_CTRL"
+        INDEX: 3
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          Air_T: 21.6
+        VARIABLES:    
+          R275_Simulated_Air_Temperature: "Air_T"
+      MAPPING5:
+        TO: "P_CTRL"
+        INDEX: 4
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          Air_T: 21.6
+        VARIABLES:    
+          R276_Simulated_Air_Temperature: "Air_T"
+          
+  SIGNALS_OUTGOING_FROM_PREPROCESS:
+    FROM: "PREPROCESS"
+    MAPPINGS:
+      MAPPING1:
+        TO: "UMAR"
+        VARIABLES:          
+          DryBulb_Temperature: "DryBulb_Temperature"
+          DewPoint_Temperature: "DewPoint_Temperature"
+          Relative_Humidity: "Relative_Humidity"
+          Diffuse_SolarRadiation: "Diffuse_SolarRadiation"
+          Direct_SolarRadiation: "Direct_SolarRadiation"
+          Wind_Speed: "Wind_Speed"
+          Wind_Direction: "Wind_Direction"
+          R272_Occupancy: "R272_Occupancy"
+          R273_Occupancy: "R273_Occupancy"
+          R274_Occupancy: "R274_Occupancy"
+          R272_Heating_Flow: "R272_Heating_Flow"
+          R272_Cooling_Flow: "R272_Cooling_Flow"
+          R273_Heating_Flow: "R273_Heating_Flow"
+          R273_Cooling_Flow: "R273_Cooling_Flow"
+          R274_Heating_Flow: "R274_Heating_Flow"
+          R274_Cooling_Flow: "R274_Cooling_Flow"
+          R275_Heating_Flow: "R275_Heating_Flow"
+          R275_Cooling_Flow: "R275_Cooling_Flow"
+          R276_Heating_Flow: "R276_Heating_Flow"
+          R276_Cooling_Flow: "R276_Cooling_Flow"
+          DistrictHeating_Flow: "DistrictHeating_Flow"
+          DistrictCooling_Flow: "DistrictCooling_Flow"
+          R272_Shade: "R272_Shade"
+          R273_Shade: "R273_Shade"
+          R274_Shade: "R274_Shade"
+          R272_Window: "R272_Window"
+          R273_Window1: "R273_Window1"
+          R273_Window2: "R273_Window2"
+          R274_Window: "R274_Window"
+          R272_Setpoint_Temperature: "R272_Setpoint_Temperature"
+          R273_Setpoint_Temperature: "R273_Setpoint_Temperature"
+          R274_Setpoint_Temperature: "R274_Setpoint_Temperature"
+          R275_Setpoint_Temperature: "R275_Setpoint_Temperature"
+          R276_Setpoint_Temperature: "R276_Setpoint_Temperature"
+          DistrictHeating_Temperature: "DistrictHeating_Temperature"
+          DistrictCooling_Temperature: "DistrictCooling_Temperature"
+          DistrictHeating_Switch: "DistrictHeating_Switch"
+          DistrictCooling_Switch: "DistrictCooling_Switch"
+      MAPPING2:
+        TO: "COLLECTOR"
+        VARIABLES:    
+          R272_Setpoint_Temperature: "R272_Setpoint_Temperature"
+
+
+  SIGNALS_OUTGOING_FROM_DATA:
+    FROM: "DATA"
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:    
+          Weather_DryBulb_Temperature: "Weather_DryBulb_Temperature"
+          Weather_DewPoint_Temperature: "Weather_DewPoint_Temperature"
+          Weather_Relative_Humidity: "Weather_Relative_Humidity"
+          Weather_Direct_SolarRadiation: "Weather_Direct_SolarRadiation"
+          Weather_Diffuse_SolarRadiation: "Weather_Diffuse_SolarRadiation"
+          Weather_Wind_Speed: "Weather_Wind_Speed"
+          Weather_Wind_Direction: "Weather_Wind_Direction"
+          AirConditioning_Mode: "AirConditioning_Mode"
+          DistrictNetwork_Temperature: "DistrictNetwork_Temperature"
+          R272_SetPoint_UpperBound: "SetPoint_UpperBound"
+          R272_SetPoint_LowerBound: "SetPoint_LowerBound"
+          R272_Window_Operation: "R272_Window_Operation"
+          R272_Shade_Operation: "R272_Shade_Operation"
+          R272_Occupant_Operation: "R272_Occupant_Operation"
+          R273_SetPoint_UpperBound: "SetPoint_UpperBound"
+          R273_SetPoint_LowerBound: "SetPoint_LowerBound"
+          R273_Window1_Operation: "R273_Window1_Operation"
+          R273_Window2_Operation: "R273_Window2_Operation"
+          R273_Shade_Operation: "R273_Shade_Operation"
+          R273_Occupant_Operation: "R273_Occupant_Operation"
+          R274_SetPoint_UpperBound: "SetPoint_UpperBound"
+          R274_SetPoint_LowerBound: "SetPoint_LowerBound"
+          R274_Window_Operation: "R274_Window_Operation"
+          R274_Shade_Operation: "R274_Shade_Operation"
+          R274_Occupant_Operation: "R274_Occupant_Operation"
+          R275_SetPoint_UpperBound: "SetPoint_UpperBound"
+          R275_SetPoint_LowerBound: "SetPoint_LowerBound"
+          R276_SetPoint_UpperBound: "SetPoint_UpperBound"
+          R276_SetPoint_LowerBound: "SetPoint_LowerBound"
+      MAPPING2:
+        TO: "P_CTRL"
+        INDEX: 0
+        VARIABLES:    
+          SetPoint_UpperBound: "sup_lim"
+          SetPoint_LowerBound: "inf_lim"
+          AirConditioning_Mode: "AC_mode"
+      MAPPING3:
+        TO: "P_CTRL"
+        INDEX: 1
+        VARIABLES:    
+          SetPoint_UpperBound: "sup_lim"
+          SetPoint_LowerBound: "inf_lim"
+          AirConditioning_Mode: "AC_mode"
+      MAPPING4:
+        TO: "P_CTRL"
+        INDEX: 2
+        VARIABLES:    
+          SetPoint_UpperBound: "sup_lim"
+          SetPoint_LowerBound: "inf_lim"
+          AirConditioning_Mode: "AC_mode"
+      MAPPING5:
+        TO: "P_CTRL"
+        INDEX: 3
+        VARIABLES:    
+          SetPoint_UpperBound: "sup_lim"
+          SetPoint_LowerBound: "inf_lim"
+          AirConditioning_Mode: "AC_mode"
+      MAPPING6:
+        TO: "P_CTRL"
+        INDEX: 4
+        VARIABLES:    
+          SetPoint_UpperBound: "sup_lim"
+          SetPoint_LowerBound: "inf_lim"
+          AirConditioning_Mode: "AC_mode"
+
+  SIGNALS_OUTGOING_FROM_NAN_PLACEHOLDER:
+    FROM: "NanPlaceholder"
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          R272_Window_Override: "R272_Window_Override"
+          R272_Shade_Override: "R272_Shade_Override"
+          R273__Window1_Override: "R273__Window1_Override"
+          R273__Window2_Override: "R273__Window2_Override"
+          R273_Shade_Override: "R273_Shade_Override"
+          R274__Window_Override: "R274__Window_Override"    
+          R274_Shade_Override: "R274_Shade_Override"
+  
+  SIGNALS_OUTGOING_FROM_P_CTRL_0:
+    FROM: "P_CTRL"
+    INDEX: 0
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          SP_override: "R272_SetPoint_Override"
+
+  SIGNALS_OUTGOING_FROM_P_CTRL_1:
+    FROM: "P_CTRL"
+    INDEX: 1
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          SP_override: "R273_SetPoint_Override"
+
+  SIGNALS_OUTGOING_FROM_P_CTRL_2:
+    FROM: "P_CTRL"
+    INDEX: 2
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          SP_override: "R274_SetPoint_Override"
+
+  SIGNALS_OUTGOING_FROM_P_CTRL_3:
+    FROM: "P_CTRL"
+    INDEX: 3
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          SP_override: "R275_SetPoint_Override"
+
+  SIGNALS_OUTGOING_FROM_P_CTRL_4:
+    FROM: "P_CTRL"
+    INDEX: 4
+    MAPPINGS:
+      MAPPING1:
+        TO: "PREPROCESS"
+        VARIABLES:
+          SP_override: "R276_SetPoint_Override"

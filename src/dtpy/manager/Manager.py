@@ -43,6 +43,12 @@ class Manager:
                     attributes["TYPE"],
                     attributes=load_list_from_file(attributes["PATH"]),
                 )
+            elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
+                simulators[attributes["NAME"]] = self.world.start(
+                    attributes["TYPE"],
+                    attributes=load_list_from_file(attributes["PATH"]),
+                    value=attributes["VALUE"]
+                )
             elif attributes["TYPE"] == "COLLECTOR":
                 simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
             else:
@@ -62,6 +68,8 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(num_of_models)
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(num_of_models)
+            elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].CONST.create(num_of_models)
             else:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
         return models

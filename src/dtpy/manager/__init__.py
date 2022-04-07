@@ -3,4 +3,5 @@ MOSAIK_CONFIG = {
     "TABULAR_DATA": {"python": "dtpy.simulators.TabularDataSimPandas:TabularData"},
     "COLLECTOR": {"python": "dtpy.simulators.Collector:Collector"},
     "NAN_PLACEHOLDER": {"python": "dtpy.simulators.NanPlaceholder:NanPlaceholder"},
+    "CONSTANT_VALUE_SIM": {"python": "dtpy.simulators.ConstantValueSim:ConstantValueSim"},
 }

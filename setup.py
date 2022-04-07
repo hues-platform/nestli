@@ -4,6 +4,7 @@ setup(name='dtpy',
       description='Digital Twin in python',
       packages=['dtpy'],
       package_dir={'':'src'},
+      version="0.1.0",
       install_requires=[
         'mosaik',
         'pandas',

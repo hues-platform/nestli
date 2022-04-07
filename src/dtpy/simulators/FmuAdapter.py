@@ -125,8 +125,7 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            print(self.start_time, self.stop_time)
-            self._entities[eid].setupExperiment(startTime=self.start_time, stopTime=self.stop_time)
+            self._entities[eid].setupExperiment(0, stopTime=self.stop_time - self.start_time)
             self._entities[eid].enterInitializationMode()
             self._entities[eid].exitInitializationMode()
 

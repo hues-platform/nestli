@@ -25,7 +25,6 @@ class Manager:
         simulators = {}
         start_time = get_seconds_from_date(self.cfg["START_DAY"], self.cfg["START_MONTH"])
         stop_time = start_time + self.cfg["DURATION"]
-        print(start_time, stop_time)
         for sim, attributes in self.cfg["SIMULATORS"].items():
             if attributes["TYPE"] == "FMU":
                 simulators[attributes["NAME"]] = self.world.start(

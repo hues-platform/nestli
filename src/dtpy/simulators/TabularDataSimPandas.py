@@ -35,7 +35,7 @@ class TabularData(mosaik_api.Simulator):
             "non-persistent": non_persistent,
         }
 
-        self.next_index = start_time / time_resolution
+        self.next_index = (int)(start_time / time_resolution)
 
         return self.meta
 

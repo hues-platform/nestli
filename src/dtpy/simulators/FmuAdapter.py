@@ -121,7 +121,7 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            if self.model_name == "PREPROCESS":
+            if self.model_name != "UMAR":
                 self.stop_time = self.stop_time - self.start_time
                 self.start_time = 0
 

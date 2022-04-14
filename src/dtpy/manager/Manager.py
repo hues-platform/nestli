@@ -50,7 +50,7 @@ class Manager:
             elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
                 simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], attributes=load_list_from_file(attributes["PATH"]), value=attributes["VALUE"])
             elif attributes["TYPE"] == "COLLECTOR":
-                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], start_time=start_time, output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
             else:
                 raise NotImplementedError(f"The Simulator {attributes['TYPE']} has not been implemented.")
         return simulators

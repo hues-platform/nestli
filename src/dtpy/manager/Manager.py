@@ -3,6 +3,7 @@ import mosaik
 from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG
 from dtpy.common.config_loader import load_config, convert_entries_to_abs_pathes
+from dtpy.common.time_converter import get_seconds_from_date
 
 
 class Manager:
@@ -18,10 +19,12 @@ class Manager:
         self.connect_signals()
 
     def run(self):
-        self.world.run(until=self.cfg["END"], print_progress=True)
+        self.world.run(until=self.cfg["DURATION"], print_progress=True)
 
     def initialize_simulators(self):
         simulators = {}
+        start_time = get_seconds_from_date(self.cfg["START_DAY"], self.cfg["START_MONTH"])
+        stop_time = start_time + self.cfg["DURATION"]
         for sim, attributes in self.cfg["SIMULATORS"].items():
             if attributes["TYPE"] == "FMU":
                 simulators[attributes["NAME"]] = self.world.start(
@@ -30,12 +33,13 @@ class Manager:
                     fmu_name=attributes["NAME"],
                     model_name=attributes["NAME"],
                     instance_name=attributes["TYPE"] + "_Instance",
-                    stop_time=self.cfg["END"],
+                    stop_time=stop_time,
+                    start_time=start_time
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
-                    sim_start=self.cfg["START"],
+                    start_time=start_time,
                     dataframe=build_data_frame_from_h5_directory(attributes["PATH"]),
                 )
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
@@ -44,15 +48,11 @@ class Manager:
                     attributes=load_list_from_file(attributes["PATH"]),
                 )
             elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
-                simulators[attributes["NAME"]] = self.world.start(
-                    attributes["TYPE"],
-                    attributes=load_list_from_file(attributes["PATH"]),
-                    value=attributes["VALUE"]
-                )
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], attributes=load_list_from_file(attributes["PATH"]), value=attributes["VALUE"])
             elif attributes["TYPE"] == "COLLECTOR":
-                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], start_time=start_time, output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
             else:
-                raise NotImplementedError("The Simulator %s has not been implemented." % attributes["TYPE"])
+                raise NotImplementedError(f"The Simulator {attributes['TYPE']} has not been implemented.")
         return simulators
 
     def initialize_models(self):
@@ -70,8 +70,10 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(num_of_models)
             elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].CONST.create(num_of_models)
-            else:
+            elif attributes["TYPE"] == "COLLECTOR":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
+            else:
+                raise NotImplementedError(f"The SimulatorType {attributes['TYPE']} has not been defined.")
         return models
 
     def connect_signals(self):

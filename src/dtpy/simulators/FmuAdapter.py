@@ -55,6 +55,7 @@ class FmuAdapter(mosaik_api.Simulator):
         visible=False,
         stop_time_defined=False,
         stop_time=1,
+        start_time=0,
     ):
 
         if work_dir is None or model_name is None or fmu_name is None or instance_name is None:
@@ -71,7 +72,7 @@ class FmuAdapter(mosaik_api.Simulator):
         # self.fmi_version = fmi_version
 
         # Co-simulation-specific variables:
-        self.start_time = 0
+        self.start_time = start_time
         self.time_diff_resolution = time_diff_resolution
         self.interactive = interactive
         self.visible = visible
@@ -120,7 +121,11 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            self._entities[eid].setupExperiment(startTime=self.start_time, stopTime=self.stop_time)
+            if self.model_name != "UMAR":
+                self.stop_time = self.stop_time - self.start_time
+                self.start_time = 0
+
+            self._entities[eid].setupExperiment(startTime=1.0 * self.start_time, stopTime=self.stop_time)
             self._entities[eid].enterInitializationMode()
             self._entities[eid].exitInitializationMode()
 
@@ -135,16 +140,14 @@ class FmuAdapter(mosaik_api.Simulator):
             # If no input data is provided, all entities are stepped:
             if inputs is None or inputs == {}:
                 for fmu in self._entities.values():
-                    fmu.doStep(t * self.step_factor, self.step_size * self.step_factor, True)
+                    fmu.doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
 
             else:
                 for eid, attrs in inputs.items():
                     for attr, vals in attrs.items():
                         for val in vals.values():
                             self.set_values(eid, {attr: val}, "input")
-
-                    self._entities[eid].doStep(t * self.step_factor, self.step_size * self.step_factor, True)
-
+                    self._entities[eid].doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
             return t + self.step_size
 
     def finalize(self):

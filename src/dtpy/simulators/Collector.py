@@ -27,8 +27,9 @@ class Collector(mosaik_api.Simulator):
         self.eid = None
         self.data = collections.defaultdict(lambda: collections.defaultdict(dict))
 
-    def init(self, sid, time_resolution, output_folder):
+    def init(self, sid, start_time, time_resolution, output_folder):
         self.output_folder = output_folder
+        self.start_time = start_time
         return self.meta
 
     def create(self, num, model):
@@ -39,6 +40,7 @@ class Collector(mosaik_api.Simulator):
         return [{"eid": self.eid, "type": model}]
 
     def step(self, time, inputs, max_advance):
+        time = time + self.start_time
         data = inputs.get(self.eid, {})
         for attr, values in data.items():
             for src, value in values.items():

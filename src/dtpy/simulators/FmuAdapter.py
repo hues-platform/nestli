@@ -6,7 +6,6 @@ import dtpy.simulators.parse_xml as parse_xml
 from fmpy import read_model_description, extract
 from fmpy.fmi2 import FMU2Slave
 from dtpy.simulators.fmi_logging import get_callbacks_logger
-from dtpy.common.idf_modifier import modify_idf_start_date
 
 meta = {"type": "time-based", "models": {}, "extra_methods": ["fmi_set", "fmi_get"]}
 
@@ -57,8 +56,6 @@ class FmuAdapter(mosaik_api.Simulator):
         stop_time_defined=False,
         stop_time=1,
         start_time=0,
-        start_day=1,
-        start_month=1
     ):
 
         if work_dir is None or model_name is None or fmu_name is None or instance_name is None:
@@ -104,7 +101,6 @@ class FmuAdapter(mosaik_api.Simulator):
 
         self.adjust_var_table()  # Completing var_table and translation_table structure
         self.adjust_meta()  # Writing variable information into mosaik's meta
-        modify_idf_start_date(self.uri_to_extracted_fmu+"/resources", start_day, start_month)
         return self.meta
 
     def create(self, num, model, **model_params):
@@ -125,7 +121,11 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            self._entities[eid].setupExperiment(0, stopTime=self.stop_time - self.start_time)
+            if self.model_name == "PREPROCESS":
+                self.stop_time = self.stop_time - self.start_time
+                self.start_time = 0
+
+            self._entities[eid].setupExperiment(startTime=1.0 * self.start_time, stopTime=self.stop_time)
             self._entities[eid].enterInitializationMode()
             self._entities[eid].exitInitializationMode()
 
@@ -140,16 +140,14 @@ class FmuAdapter(mosaik_api.Simulator):
             # If no input data is provided, all entities are stepped:
             if inputs is None or inputs == {}:
                 for fmu in self._entities.values():
-                    fmu.doStep(t * self.step_factor, self.step_size * self.step_factor, True)
+                    fmu.doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
 
             else:
                 for eid, attrs in inputs.items():
                     for attr, vals in attrs.items():
                         for val in vals.values():
                             self.set_values(eid, {attr: val}, "input")
-
-                    self._entities[eid].doStep(t * self.step_factor, self.step_size * self.step_factor, True)
-
+                    self._entities[eid].doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
             return t + self.step_size
 
     def finalize(self):
@@ -166,7 +164,7 @@ class FmuAdapter(mosaik_api.Simulator):
             for attr in attrs:
                 data[eid][attr] = self.get_value(eid, attr)
 
-        return data     
+        return data
 
     def adjust_var_table(self):
         """Help function that completes the structure of var_table and translation_tabel. Both require listing of

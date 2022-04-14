@@ -34,9 +34,7 @@ class Manager:
                     model_name=attributes["NAME"],
                     instance_name=attributes["TYPE"] + "_Instance",
                     stop_time=stop_time,
-                    start_time=start_time,
-                    start_day=self.cfg["START_DAY"],
-                    start_month=self.cfg["START_MONTH"]
+                    start_time=start_time
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
                 simulators[attributes["NAME"]] = self.world.start(
@@ -50,11 +48,7 @@ class Manager:
                     attributes=load_list_from_file(attributes["PATH"]),
                 )
             elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
-                simulators[attributes["NAME"]] = self.world.start(
-                    attributes["TYPE"],
-                    attributes=load_list_from_file(attributes["PATH"]),
-                    value=attributes["VALUE"]
-                )
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], attributes=load_list_from_file(attributes["PATH"]), value=attributes["VALUE"])
             elif attributes["TYPE"] == "COLLECTOR":
                 simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
             else:

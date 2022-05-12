@@ -1,7 +1,5 @@
 import mosaik_api
 
-SENTINEL = object()
-
 
 class TabularData(mosaik_api.Simulator):
     def __init__(self):
@@ -65,25 +63,16 @@ class TabularData(mosaik_api.Simulator):
         else:
             self.cache = {}
         self.next_index += 1
-        try:
-            next_step = time + self.time_resolution
-        except IndexError:
-            next_step = max_advance
 
+        next_step = time + self.time_resolution
         return next_step
 
     def get_data(self, outputs):
         data = {}
         attrs = outputs.get(self.eid, [])
         for attr in attrs:
-            value = self.cache.get(attr, SENTINEL)
-            if value != SENTINEL:
-                data[attr] = value
-
+            value = self.cache.get(attr)
+            data[attr] = value
         if data:
             data = {self.eid: data}
-
-        if "tabular_data-1" in self.eid:
-            print("TABULAR_DATA: ", data)
-
         return data

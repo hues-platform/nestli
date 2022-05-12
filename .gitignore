@@ -130,3 +130,6 @@ dmypy.json
 
 # Output folder 
 Output_EPExport*
+
+# credentials
+authorization.json

@@ -1,4 +1,6 @@
 import mosaik
+import logging
+import datetime as dt
 
 from dtpy.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file
 from dtpy.manager import MOSAIK_CONFIG
@@ -11,6 +13,8 @@ class Manager:
         self.cfg = load_config(config_file)
         convert_entries_to_abs_pathes(self.cfg, config_file)
         self.mosaik_cfg = MOSAIK_CONFIG
+        self.init_logger()
+        self.logger = logging.getLogger(__name__)
 
     def build_simulation(self):
         self.world = mosaik.World(self.mosaik_cfg, time_resolution=self.cfg["RESOLUTION"])
@@ -19,12 +23,12 @@ class Manager:
         self.connect_signals()
 
     def run(self):
-        self.world.run(until=self.cfg["DURATION"], print_progress=True)
+        self.logger.info("Starting simulation")
+        self.world.run(until=self.cfg["DURATION"], print_progress=True, lazy_stepping=True)
 
     def initialize_simulators(self):
         simulators = {}
-        start_time = get_seconds_from_date(self.cfg["START_DAY"], self.cfg["START_MONTH"])
-        stop_time = start_time + self.cfg["DURATION"]
+        start_date = dt.datetime.strptime(self.cfg["START"], r"%Y-%m-%d")
         for sim, attributes in self.cfg["SIMULATORS"].items():
             if attributes["TYPE"] == "FMU":
                 simulators[attributes["NAME"]] = self.world.start(
@@ -33,13 +37,13 @@ class Manager:
                     fmu_name=attributes["NAME"],
                     model_name=attributes["NAME"],
                     instance_name=attributes["TYPE"] + "_Instance",
-                    stop_time=stop_time,
-                    start_time=start_time
+                    duration=self.cfg["DURATION"],
+                    start_date=start_date,
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
-                    start_time=start_time,
+                    start_time=get_seconds_from_date(start_date.day, start_date.month),
                     dataframe=build_data_frame_from_h5_directory(attributes["PATH"]),
                 )
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
@@ -47,10 +51,10 @@ class Manager:
                     attributes["TYPE"],
                     attributes=load_list_from_file(attributes["PATH"]),
                 )
-            elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
-                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], attributes=load_list_from_file(attributes["PATH"]), value=attributes["VALUE"])
+            elif attributes["TYPE"] == "CONSTANT_VALUE":
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], constant_values=create_dict_from_file(attributes["PATH"]))
             elif attributes["TYPE"] == "COLLECTOR":
-                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], start_time=start_time, output_folder=self.cfg["OUTPUT_FOLDER_PATH"])
+                simulators[attributes["NAME"]] = self.world.start(attributes["TYPE"], output_folder=self.cfg["OUTPUT_FOLDER_PATH"], start_date=start_date)
             else:
                 raise NotImplementedError(f"The Simulator {attributes['TYPE']} has not been implemented.")
         return simulators
@@ -68,7 +72,7 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(num_of_models)
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].NaN.create(num_of_models)
-            elif attributes["TYPE"] == "CONSTANT_VALUE_SIM":
+            elif attributes["TYPE"] == "CONSTANT_VALUE":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].CONST.create(num_of_models)
             elif attributes["TYPE"] == "COLLECTOR":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
@@ -101,3 +105,12 @@ class Manager:
             else:
                 for key, value in mapping_dict.items():
                     self.world.connect(signal_source, signal_drain, (value, key))
+
+    def init_logger(self):
+        file_handler = logging.FileHandler(self.cfg["OUTPUT_FOLDER_PATH"] + "/simulation.log")
+        formatter = logging.Formatter("%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s")
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(logging.INFO)
+        logger = logging.getLogger()
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.DEBUG)

@@ -2,30 +2,15 @@ import itertools
 import os
 import shutil
 import mosaik_api
+import logging
+import datetime as dt
 import dtpy.simulators.parse_xml as parse_xml
+from dtpy.common.time_converter import get_seconds_from_date
 from fmpy import read_model_description, extract
 from fmpy.fmi2 import FMU2Slave
 from dtpy.simulators.fmi_logging import get_callbacks_logger
 
 meta = {"type": "time-based", "models": {}, "extra_methods": ["fmi_set", "fmi_get"]}
-
-"""
-var_table = {
-    'parameter': {
-        'a': 'Real',
-        'b': 'Integer',
-        'c': 'Boolean',
-        'd': 'String'
-    },
-    'input': {
-        'x': 'Real',
-        ...
-    },
-    'output': {
-        ...
-    }
-}
-"""
 
 
 class FmuAdapter(mosaik_api.Simulator):
@@ -48,14 +33,9 @@ class FmuAdapter(mosaik_api.Simulator):
         time_resolution=1,
         logging_on=False,
         step_factor=1.0,
-        var_table=None,
-        translation_table=None,
-        time_diff_resolution=1e-9,
-        interactive=False,
         visible=False,
-        stop_time_defined=False,
-        stop_time=1,
-        start_time=0,
+        duration=1,
+        start_date=0,
     ):
 
         if work_dir is None or model_name is None or fmu_name is None or instance_name is None:
@@ -69,15 +49,11 @@ class FmuAdapter(mosaik_api.Simulator):
         self.step_size = time_resolution
         self.step_factor = step_factor  # Factor to translate mosaik integer time into FMI float time
         self.logging_on = logging_on
-        # self.fmi_version = fmi_version
 
-        # Co-simulation-specific variables:
-        self.start_time = start_time
-        self.time_diff_resolution = time_diff_resolution
-        self.interactive = interactive
+        # CHANGE IF NOT LEAP YEAR
+        self.start_time = get_seconds_from_date(day=start_date.day, month=start_date.month)
         self.visible = visible
-        self.stop_time_defined = stop_time_defined
-        self.stop_time = stop_time
+        self.stop_time = self.start_time + duration
 
         # Extracting files from the .fmu (only needed at first use, but will not cause error later)
         path_to_fmu = os.path.join(self.work_dir, self.fmu_name + ".fmu")
@@ -90,17 +66,11 @@ class FmuAdapter(mosaik_api.Simulator):
 
         # FMU variables may be either given by the user or are read automatically from FMU description file:
         xmlfile = os.path.join(self.work_dir, self.fmu_name, "modelDescription.xml")
-        if var_table is None:
-            self.var_table, self.translation_table = parse_xml.get_var_table(xmlfile)
-        else:
-            self.var_table = var_table
-            self.translation_table = translation_table  # If variables are specified by hand, a translation table  #
-            # also has to be given (in case some FMI variable names are not python-conform)
-
-        self.fmi_type = "CoSimulation"
+        self.var_table, self.translation_table = parse_xml.get_var_table(xmlfile)
 
         self.adjust_var_table()  # Completing var_table and translation_table structure
         self.adjust_meta()  # Writing variable information into mosaik's meta
+        self.logger = logging.getLogger(__name__)
         return self.meta
 
     def create(self, num, model, **model_params):
@@ -121,7 +91,7 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            if self.model_name != "UMAR":
+            if self.model_name != "UMAR":  # Other fmu do not like starting at something else then 0. But UMAR has no start at start_time
                 self.stop_time = self.stop_time - self.start_time
                 self.start_time = 0
 
@@ -129,26 +99,23 @@ class FmuAdapter(mosaik_api.Simulator):
             self._entities[eid].enterInitializationMode()
             self._entities[eid].exitInitializationMode()
 
-            # self.set_values(eid, model_params, 'parameter')
-
             entities.append({"eid": eid, "type": model, "rel": []})
 
         return entities
 
     def step(self, t, inputs, max_advance):
-        if self.fmi_type == "CoSimulation":
-            # If no input data is provided, all entities are stepped:
-            if inputs is None or inputs == {}:
-                for fmu in self._entities.values():
-                    fmu.doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
+        self.logger.info(f"FMU Step: {dt.datetime(year=2022, month=5, day=2) + dt.timedelta(seconds=t)}, {self.model_name}, {t}")
+        if inputs is None or inputs == {}:
+            for fmu in self._entities.values():
+                fmu.doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
 
-            else:
-                for eid, attrs in inputs.items():
-                    for attr, vals in attrs.items():
-                        for val in vals.values():
-                            self.set_values(eid, {attr: val}, "input")
-                    self._entities[eid].doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
-            return t + self.step_size
+        else:
+            for eid, attrs in inputs.items():
+                for attr, vals in attrs.items():
+                    for val in vals.values():
+                        self.set_values(eid, {attr: val}, "input")
+                self._entities[eid].doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
+        return t + self.step_size
 
     def finalize(self):
         for key, value in self._entities.items():

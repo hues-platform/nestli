@@ -7,19 +7,19 @@ SIMULATORS:
   SIM1:
     NAME: "UMAR"
     TYPE: "FMU"
-    PATH: "$DTPY$./simulators/ressources/fmu"
+    PATH: "$nestli$./simulators/ressources/fmu"
   SIM2:
     NAME: "PREPROCESS"
     TYPE: "FMU"
-    PATH: "$DTPY$./simulators/ressources/fmu"
+    PATH: "$nestli$./simulators/ressources/fmu"
   SIM3:
     NAME: "DATA"
     TYPE: "TABULAR_DATA"
-    PATH: "$DTPY$./simulators/ressources/data"
+    PATH: "$nestli$./simulators/ressources/data"
   SIM4:
     NAME: "NanPlaceholder"
     TYPE: "NAN_PLACEHOLDER"
-    PATH: "$DTPY$./simulators/ressources/data/override_variables.json"
+    PATH: "$nestli$./simulators/ressources/data/override_variables.json"
   SIM5:
     NAME: "COLLECTOR"
     TYPE: "COLLECTOR"
@@ -28,7 +28,7 @@ MAPPINGS:
   MAPPING1:
     FROM: "UMAR"
     TO: "PREPROCESS"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_umar.json"
+    PATH: "$nestli$./simulators/ressources/mappings/mapping_preprocess_from_umar.json"
     CIRCULAR_DEPENDENDY: TRUE
     INITIAL_VALUES:
       R272_Simulated_Air_Temperature: 24.5669
@@ -39,16 +39,16 @@ MAPPINGS:
   MAPPING2:
     FROM: "PREPROCESS"
     TO: "UMAR"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_umar_from_preprocess.json"
+    PATH: "$nestli$./simulators/ressources/mappings/mapping_umar_from_preprocess.json"
   MAPPING3:
     FROM: "DATA"
     TO: "PREPROCESS"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_data.json"
+    PATH: "$nestli$./simulators/ressources/mappings/mapping_preprocess_from_data.json"
   MAPPING4:
     FROM: "PREPROCESS"
     TO: "COLLECTOR"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_collector_from_preprocess.json"
+    PATH: "$nestli$./simulators/ressources/mappings/mapping_collector_from_preprocess.json"
   MAPPING5:
     FROM: "NanPlaceholder"
     TO: "PREPROCESS"
-    PATH: "$DTPY$./simulators/ressources/mappings/mapping_preprocess_from_nan.json"
+    PATH: "$nestli$./simulators/ressources/mappings/mapping_preprocess_from_nan.json"

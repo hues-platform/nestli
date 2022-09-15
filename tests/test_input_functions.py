@@ -1,4 +1,4 @@
-from dtpy.common.input_functions import create_dict_from_file
+from nestli.common.input_functions import create_dict_from_file
 import os
 from pathlib import Path
 

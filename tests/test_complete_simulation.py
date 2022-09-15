@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from dtpy.manager.Manager import Manager
+=======
+from nestli.manager.Manager import Manager
+>>>>>>> os_version
 import os
 from pathlib import Path
 import pytest

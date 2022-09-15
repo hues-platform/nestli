@@ -51,6 +51,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+<<<<<<< HEAD
 # Translations
 *.mo
 *.pot
@@ -61,13 +62,18 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+=======
+>>>>>>> os_version
 # Flask stuff:
 instance/
 .webassets-cache
 
+<<<<<<< HEAD
 # Scrapy stuff:
 .scrapy
 
+=======
+>>>>>>> os_version
 # Sphinx documentation
 docs/_build/
 
@@ -84,6 +90,7 @@ ipython_config.py
 # pyenv
 .python-version
 
+<<<<<<< HEAD
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
 #   However, in case of collaboration, if having platform-specific dependencies or dependencies
@@ -101,6 +108,11 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+=======
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+>>>>>>> os_version
 # Environments
 .env
 .venv
@@ -110,6 +122,7 @@ ENV/
 env.bak/
 venv.bak/
 
+<<<<<<< HEAD
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -117,6 +130,8 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+=======
+>>>>>>> os_version
 # mkdocs documentation
 /site
 
@@ -125,6 +140,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+<<<<<<< HEAD
 # Pyre type checker
 .pyre/
 
@@ -133,3 +149,15 @@ Output_EPExport*
 
 # credentials
 authorization.json
+=======
+# Output folder 
+Output_EPExport*
+*.csv
+*.log
+
+# credentials
+authorization.json
+
+# sensor data
+*.h5
+>>>>>>> os_version

@@ -1,0 +1,6 @@
+sphinx-build -b latex . ./_latex
+cd _latex
+.\make
+Copy-Item nestli.pdf -Destination ../  
+cd ../
+Remove-Item _latex -Force

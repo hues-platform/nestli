@@ -1,4 +1,4 @@
-from dtpy.common.config_loader import load_config
+from nestli.common.config_loader import load_config
 import os
 from pathlib import Path
 

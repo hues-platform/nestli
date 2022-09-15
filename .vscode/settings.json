@@ -7,10 +7,6 @@
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "--line-length=180 "
-<<<<<<< HEAD
-    ]
-=======
     ],
     "esbonio.sphinx.confDir": ""
->>>>>>> os_version
 }

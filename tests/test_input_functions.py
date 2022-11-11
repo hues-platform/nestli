@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-_TEST_DICTIONARY_PATH = os.path.dirname(__file__) / Path("./ressources/test_dictionary.txt")
+_TEST_DICTIONARY_PATH = os.path.dirname(__file__) / Path("./resources/test_dictionary.txt")
 
 
 def test_config_loader():

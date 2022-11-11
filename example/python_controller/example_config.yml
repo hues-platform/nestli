@@ -1,0 +1,274 @@
+# The following are general parameters for the simulation. 
+# Make sure that the RESOLUTION is the same as in your models.
+OUTPUT_FOLDER_PATH: ""
+START: '2020-07-01'
+DURATION: 7
+RESOLUTION: 60
+
+
+# The Simulators specify all the models in the simulation. Currently the following simulators are available:
+#   FMU:  This will create a simulator from an FMU. 
+#         PATH specifies the folder where the FMU is contained and NAME the filename.
+#   TABULAR_DATA: This will create a simulator from DATA in tabular form. The supported format is hdf5.
+#         PATH specifies the folder where the .h5 files are contained. The file name must correspond with the variable name of the data it containes.
+#   NAN_PLACEHOLDER: This simulator will create a NaN value to all connected entities.    
+#   COLLECTOR: This is a simple Data collector. It will save the data of all signals you connect to it and write them to a file after the simulation.
+#         No additional information is neccessary.
+#   PYTHON_FUNCTION: This will create a controller from a python function. You specify the Path to the python class.
+SIMULATORS: 
+  SIM1:
+    NAME: "UMAR"
+    TYPE: "FMU"
+    PATH: "$nestli$./simulators/resources"
+  SIM2:
+    NAME: "PREPROCESS"
+    TYPE: "FMU"
+    PATH: "$nestli$./simulators/resources"
+  SIM3:
+    NAME: "DATA"
+    TYPE: "TABULAR_DATA"
+    PATH: "$nestli$./simulators/resources/data"
+  SIM4:
+    NAME: "PyCTRL"
+    TYPE: "PYTHON_FUNCTION"
+    Controller: "PythonController.PythonController"
+  SIM5:
+    NAME: "COLLECTOR"
+    TYPE: "COLLECTOR"
+    PATH: ""
+  
+# The mappings define all the connection between the different models.
+MAPPINGS:
+  SIGNALS_OUTGOING_FROM_UMAR:
+    FROM: UMAR
+    MAPPINGS:
+      MAPPING1:
+        TO: PyCTRL
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          R272_Air_Temperature: 24.5669
+          R273_Air_Temperature: 23.1496
+          R274_Air_Temperature: 23.1496
+          R275_Air_Temperature: 21.6
+          R276_Air_Temperature: 21.6
+        VARIABLES:    
+          R272_Air_Temperature: R272_Air_Temperature
+          R273_Air_Temperature: R273_Air_Temperature
+          R274_Air_Temperature: R274_Air_Temperature
+          R275_Air_Temperature: R275_Air_Temperature
+          R276_Air_Temperature: R276_Air_Temperature
+      MAPPING2:
+        TO: PREPROCESS
+        CIRCULAR_DEPENDENDY: TRUE
+        INITIAL_VALUES:
+          R272_Air_Temperature: 24.5669
+          R273_Air_Temperature: 23.1496
+          R274_Air_Temperature: 23.1496
+          R275_Air_Temperature: 21.6
+          R276_Air_Temperature: 21.6
+        VARIABLES:    
+          R272_Air_Temperature: R272_Simulated_Air_Temperature
+          R273_Air_Temperature: R273_Simulated_Air_Temperature
+          R274_Air_Temperature: R274_Simulated_Air_Temperature
+          R275_Air_Temperature: R275_Simulated_Air_Temperature
+          R276_Air_Temperature: R276_Simulated_Air_Temperature
+      MAPPING3:
+        TO: COLLECTOR
+        VARIABLES:    
+          R272_Air_Temperature: R272_Air_Temperature
+          R273_Air_Temperature: R273_Air_Temperature
+          R274_Air_Temperature: R274_Air_Temperature
+          R275_Air_Temperature: R275_Air_Temperature
+          R276_Air_Temperature: R276_Air_Temperature
+          DistrictHeating_Supply_Temperature: DistrictHeating_Supply_Temperature
+          DistrictHeating_Return_Temperature: DistrictHeating_Return_Temperature
+          DistrictHeating_Return_Flow: DistrictHeating_Return_Flow
+          DistrictCooling_Supply_Temperature: DistrictCooling_Supply_Temperature
+          DistrictCooling_Return_Temperature: DistrictCooling_Return_Temperature
+          DistrictCooling_Return_Flow: DistrictCooling_Return_Flow
+          
+  SIGNALS_OUTGOING_FROM_PREPROCESS:
+    FROM: PREPROCESS
+    MAPPINGS:
+      MAPPING1:
+        TO: UMAR
+        VARIABLES:          
+          DryBulb_Temperature: DryBulb_Temperature
+          DewPoint_Temperature: DewPoint_Temperature
+          Relative_Humidity: Relative_Humidity
+          Diffuse_SolarRadiation: Diffuse_SolarRadiation
+          Direct_SolarRadiation: Direct_SolarRadiation
+          Wind_Speed: Wind_Speed
+          Wind_Direction: Wind_Direction
+          R272_Occupancy: R272_Occupancy
+          R273_Occupancy: R273_Occupancy
+          R274_Occupancy: R274_Occupancy
+          R272_Heating_Flow: R272_Heating_Flow
+          R272_Cooling_Flow: R272_Cooling_Flow
+          R273_Heating_Flow: R273_Heating_Flow
+          R273_Cooling_Flow: R273_Cooling_Flow
+          R274_Heating_Flow: R274_Heating_Flow
+          R274_Cooling_Flow: R274_Cooling_Flow
+          R275_Heating_Flow: R275_Heating_Flow
+          R275_Cooling_Flow: R275_Cooling_Flow
+          R276_Heating_Flow: R276_Heating_Flow
+          R276_Cooling_Flow: R276_Cooling_Flow
+          DistrictHeating_Flow: DistrictHeating_Flow
+          DistrictCooling_Flow: DistrictCooling_Flow
+          R272_Shade: R272_Shade
+          R273_Shade1: R273_Shade1
+          R273_Shade2: R273_Shade2
+          R273_Shade3: R273_Shade3
+          R274_Shade: R274_Shade
+          R272_Window: R272_Window
+          R273_Window1: R273_Window1
+          R273_Window2: R273_Window2
+          R274_Window: R274_Window
+          R272_Setpoint_Temperature: R272_Setpoint_Temperature
+          R273_Setpoint_Temperature: R273_Setpoint_Temperature
+          R274_Setpoint_Temperature: R274_Setpoint_Temperature
+          R275_Setpoint_Temperature: R275_Setpoint_Temperature
+          R276_Setpoint_Temperature: R276_Setpoint_Temperature
+          DistrictHeating_Temperature: DistrictHeating_Temperature
+          DistrictCooling_Temperature: DistrictCooling_Temperature
+          DistrictHeating_Switch: DistrictHeating_Switch
+          DistrictCooling_Switch: DistrictCooling_Switch
+      MAPPING2:
+        TO: COLLECTOR
+        VARIABLES:    
+          DryBulb_Temperature: DryBulb_Temperature
+          DewPoint_Temperature: DewPoint_Temperature
+          Relative_Humidity: Relative_Humidity
+          Diffuse_SolarRadiation: Diffuse_SolarRadiation
+          Direct_SolarRadiation: Direct_SolarRadiation
+          Wind_Speed: Wind_Speed
+          Wind_Direction: Wind_Direction
+          R272_Occupancy: R272_Occupancy
+          R273_Occupancy: R273_Occupancy
+          R274_Occupancy: R274_Occupancy
+          R272_Heating_Flow: R272_Heating_Flow
+          R272_Cooling_Flow: R272_Cooling_Flow
+          R273_Heating_Flow: R273_Heating_Flow
+          R273_Cooling_Flow: R273_Cooling_Flow
+          R274_Heating_Flow: R274_Heating_Flow
+          R274_Cooling_Flow: R274_Cooling_Flow
+          R275_Heating_Flow: R275_Heating_Flow
+          R275_Cooling_Flow: R275_Cooling_Flow
+          R276_Heating_Flow: R276_Heating_Flow
+          R276_Cooling_Flow: R276_Cooling_Flow
+          DistrictHeating_Flow: DistrictHeating_Flow
+          DistrictCooling_Flow: DistrictCooling_Flow
+          R272_Shade: R272_Shade
+          R273_Shade1: R273_Shade1
+          R273_Shade2: R273_Shade2
+          R273_Shade3: R273_Shade3
+          R274_Shade: R274_Shade
+          R272_Window: R272_Window
+          R273_Window1: R273_Window1
+          R273_Window2: R273_Window2
+          R274_Window: R274_Window
+          R272_Setpoint_Temperature: R272_Setpoint_Temperature
+          R273_Setpoint_Temperature: R273_Setpoint_Temperature
+          R274_Setpoint_Temperature: R274_Setpoint_Temperature
+          R275_Setpoint_Temperature: R275_Setpoint_Temperature
+          R276_Setpoint_Temperature: R276_Setpoint_Temperature
+          DistrictHeating_Temperature: DistrictHeating_Temperature
+          DistrictCooling_Temperature: DistrictCooling_Temperature
+          DistrictHeating_Switch: DistrictHeating_Switch
+          DistrictCooling_Switch: DistrictCooling_Switch
+
+  SIGNALS_OUTGOING_FROM_DATA:
+    FROM: DATA
+    MAPPINGS:
+      MAPPING1:
+        TO: PREPROCESS
+        VARIABLES:    
+          Weather_DryBulb_Temperature: Weather_DryBulb_Temperature
+          Weather_DewPoint_Temperature: Weather_DewPoint_Temperature
+          Weather_Relative_Humidity: Weather_Relative_Humidity
+          Weather_Direct_SolarRadiation: Weather_Direct_SolarRadiation
+          Weather_Diffuse_SolarRadiation: Weather_Diffuse_SolarRadiation
+          Weather_Wind_Speed: Weather_Wind_Speed
+          Weather_Wind_Direction: Weather_Wind_Direction
+          Air_Conditioning_Mode: Air_Conditioning_Mode
+          District_Network_Temperature: District_Network_Temperature
+          SetPoint_UpperBound: 
+            - R272_SetPoint_UpperBound
+            - R273_SetPoint_UpperBound
+            - R274_SetPoint_UpperBound
+            - R275_SetPoint_UpperBound
+            - R276_SetPoint_UpperBound
+          SetPoint_LowerBound:
+            - R272_SetPoint_LowerBound
+            - R273_SetPoint_LowerBound
+            - R274_SetPoint_LowerBound
+            - R275_SetPoint_LowerBound
+            - R276_SetPoint_LowerBound          
+          R272_Window_Operation: R272_Window_Operation
+          R272_Shade_Operation: R272_Shade_Operation
+          R272_Occupant_Operation: R272_Occupant_Operation          
+          R273_Window1_Operation: R273_Window1_Operation
+          R273_Window2_Operation: R273_Window2_Operation
+          R273_Shade_Operation: R273_Shade_Operation
+          R273_Occupant_Operation: R273_Occupant_Operation          
+          R274_Window_Operation: R274_Window_Operation
+          R274_Shade_Operation: R274_Shade_Operation
+          R274_Occupant_Operation: R274_Occupant_Operation
+      MAPPING2:
+        TO: PyCTRL
+        VARIABLES:    
+          SetPoint_UpperBound: SetPoint_UpperBound
+          SetPoint_LowerBound: SetPoint_LowerBound
+          Weather_DryBulb_Temperature: Weather_DryBulb_Temperature
+          Weather_DewPoint_Temperature: Weather_DewPoint_Temperature
+          Weather_Relative_Humidity: Weather_Relative_Humidity
+          Weather_Direct_SolarRadiation: Weather_Direct_SolarRadiation
+          Weather_Diffuse_SolarRadiation: Weather_Diffuse_SolarRadiation
+          Weather_Wind_Speed: Weather_Wind_Speed
+          Weather_Wind_Direction: Weather_Wind_Direction
+          Air_Conditioning_Mode: Air_Conditioning_Mode
+          District_Network_Temperature: District_Network_Temperature
+  
+  SIGNALS_OUTGOING_FROM_PyCTRL:
+    FROM: PyCTRL
+    MAPPINGS:
+      MAPPING1:
+        TO: PREPROCESS
+        VARIABLES:
+          R272_SetPoint_Override: R272_SetPoint_Override
+          R273_SetPoint_Override: R273_SetPoint_Override
+          R274_SetPoint_Override: R274_SetPoint_Override
+          R275_SetPoint_Override: R275_SetPoint_Override
+          R276_SetPoint_Override: R276_SetPoint_Override
+          R272_Window_Override: R272_Window_Override
+          R272_Shade_Override: R272_Shade_Override
+          R273_Window1_Override: R273_Window1_Override
+          R273_Window2_Override: R273_Window2_Override
+          R273_Shade1_Override: R273_Shade1_Override
+          R273_Shade2_Override: R273_Shade2_Override
+          R273_Shade3_Override: R273_Shade3_Override
+          R274_Window_Override: R274_Window_Override    
+          R274_Shade_Override: R274_Shade_Override
+          R272_Occupant_Override: R272_Occupant_Override
+          R273_Occupant_Override: R273_Occupant_Override
+          R274_Occupant_Override: R274_Occupant_Override
+      MAPPING2:
+        TO: COLLECTOR
+        VARIABLES:
+          R272_SetPoint_Override: R272_SetPoint_Override
+          R273_SetPoint_Override: R273_SetPoint_Override
+          R274_SetPoint_Override: R274_SetPoint_Override
+          R275_SetPoint_Override: R275_SetPoint_Override
+          R276_SetPoint_Override: R276_SetPoint_Override
+          R272_Window_Override: R272_Window_Override
+          R272_Shade_Override: R272_Shade_Override
+          R273_Window1_Override: R273_Window1_Override
+          R273_Window2_Override: R273_Window2_Override
+          R273_Shade1_Override: R273_Shade1_Override
+          R273_Shade2_Override: R273_Shade2_Override
+          R273_Shade3_Override: R273_Shade3_Override
+          R274_Window_Override: R274_Window_Override    
+          R274_Shade_Override: R274_Shade_Override
+          R272_Occupant_Override: R272_Occupant_Override
+          R273_Occupant_Override: R273_Occupant_Override
+          R274_Occupant_Override: R274_Occupant_Override

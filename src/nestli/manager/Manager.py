@@ -4,7 +4,7 @@ import mosaik
 import logging
 import datetime as dt
 
-from nestli.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, load_list_from_file, download_and_unzip
+from nestli.common.input_functions import create_dict_from_file, build_data_frame_from_h5_directory, download_and_unzip
 from nestli.manager import DATA_DOWNLOAD, MOSAIK_CONFIG
 from nestli.common.config_loader import (
     load_config,
@@ -37,7 +37,7 @@ class Manager:
     def run(self):
         """Starts the mosaik simulation. The end of the simulation has to be declared in the config with the DURATION field."""
         self.logger.info("Starting simulation")
-        self.world.run(until=self.cfg["DURATION"], print_progress=True, lazy_stepping=True)
+        self.world.run(until=self.cfg["DURATION"] * 86400, print_progress=True, lazy_stepping=True)
 
     def initialize_simulators(self) -> Dict:
         """Initializes the different simulators according to the config."""
@@ -51,7 +51,7 @@ class Manager:
                     fmu_name=attributes["NAME"],
                     model_name=attributes["NAME"],
                     instance_name=attributes["TYPE"] + "_Instance",
-                    duration=self.cfg["DURATION"],
+                    duration=self.cfg["DURATION"] * 86400,
                     start_date=start_date,
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
@@ -74,7 +74,6 @@ class Manager:
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
-                    attributes=load_list_from_file(attributes["PATH"]),
                 )
             elif attributes["TYPE"] == "CONSTANT_VALUE":
                 simulators[attributes["NAME"]] = self.world.start(
@@ -87,11 +86,11 @@ class Manager:
                     output_folder=self.cfg["OUTPUT_FOLDER_PATH"],
                     start_date=start_date,
                 )
-            elif attributes["TYPE"] == "OCCUPANT":
+            elif attributes["TYPE"] == "PYTHON_FUNCTION":
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
                     start_date=start_date,
-                    path=attributes["PATH"],
+                    path=attributes["Controller"],
                 )
             else:
                 raise NotImplementedError(f"The Simulator {attributes['TYPE']} has not been implemented.")
@@ -117,8 +116,8 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].CONST.create(num_of_models)
             elif attributes["TYPE"] == "COLLECTOR":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
-            elif attributes["TYPE"] == "OCCUPANT":
-                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Occupant.create(num_of_models)
+            elif attributes["TYPE"] == "PYTHON_FUNCTION":
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].PythonFunction.create(num_of_models)
             else:
                 raise NotImplementedError(f"The SimulatorType {attributes['TYPE']} has not been defined.")
         return models

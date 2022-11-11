@@ -4,9 +4,8 @@ from fmpy.fmi2 import (
     fmi2CallbackLoggerTYPE,
     fmi2CallbackAllocateMemoryTYPE,
     fmi2CallbackFreeMemoryTYPE,
-    allocateMemory,
-    freeMemory,
 )
+from fmpy import free, calloc
 
 
 def printLogMessage(component, instanceName, status, category, message):
@@ -18,6 +17,6 @@ def get_callbacks_logger(console=False):
         return None
     callbacks = fmi2CallbackFunctions()
     callbacks.logger = fmi2CallbackLoggerTYPE(printLogMessage)
-    callbacks.allocateMemory = fmi2CallbackAllocateMemoryTYPE(allocateMemory)
-    callbacks.freeMemory = fmi2CallbackFreeMemoryTYPE(freeMemory)
+    callbacks.allocateMemory = fmi2CallbackAllocateMemoryTYPE(calloc)
+    callbacks.freeMemory = fmi2CallbackFreeMemoryTYPE(free)
     return callbacks

@@ -83,8 +83,6 @@ ENV/
 env.bak/
 venv.bak/
 
-# mkdocs documentation
-/site
 
 # mypy
 .mypy_cache/
@@ -101,3 +99,10 @@ authorization.json
 
 # sensor data
 *.h5
+
+#FMU folders
+UMAR/
+PREPROCESS/
+PREPROCESS_ONLINE/
+FMUCTRL/
+.idea/

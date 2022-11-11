@@ -44,6 +44,3 @@ def validate_config(cfg: Dict):
     """Validates a config by checking if some constraints are met."""
     if "START" not in cfg or "DURATION" not in cfg or "RESOLUTION" not in cfg:
         raise LookupError("Config is missing key properties. Make sure you include START, DURATION, RESOLUTION")
-
-    if cfg["DURATION"] % 86400 != 0:
-        raise ValueError("Config error: DURATON has to be a multiple of 86400 (1 day in seconds)")

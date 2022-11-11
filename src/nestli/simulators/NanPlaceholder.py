@@ -1,4 +1,5 @@
 import mosaik_api
+import numpy as np
 
 meta = {
     "models": {},
@@ -12,7 +13,7 @@ class NanPlaceholder(mosaik_api.Simulator):
         self.sid = None
         self.eid = None
 
-    def init(self, sid, time_resolution, attributes):
+    def init(self, sid, time_resolution, attributes=["NaN"]):
         self.sid = sid
         self.time_resolution = time_resolution
         self.meta["models"]["NaN"] = {
@@ -42,5 +43,5 @@ class NanPlaceholder(mosaik_api.Simulator):
         for eid, attrs in outputs.items():
             data[eid] = {}
             for attr in attrs:
-                data[eid][attr] = float("nan")
+                data[eid][attr] = np.NAN
         return data

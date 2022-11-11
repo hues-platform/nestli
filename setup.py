@@ -4,17 +4,17 @@ setup(name='nestli',
       description='Digital Twin in python',
       packages=['nestli'],
       package_dir={'':'src'},
-      version="0.1.0",
+      version="1.0.0",
       install_requires=[
-        'mosaik==3.0.1',
-        'pandas==1.4.2',
-        'fmpy==0.3.7',
-        'pytest==7.1.2',
+        'mosaik==3.0.2',
+        'pandas==1.5.1',
+        'fmpy==0.3.12',
+        'pytest==7.1.3',
         'pyyaml==6.0',
         'tables==3.7.0',
-        'h5py==3.6.0',
-        'requests==2.22.0',
+        'h5py==3.7.0',
+        'requests==2.28.1',
         'requests_ntlm==1.1.0',
-        'scipy'   
+        'scipy==1.9.3'   
       ]
      )

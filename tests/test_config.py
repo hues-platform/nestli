@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-_TEST_CFG_PATH = os.path.dirname(__file__) / Path("./ressources/test_config.yml")
+_TEST_CFG_PATH = os.path.dirname(__file__) / Path("./resources/test_config.yml")
 
 
 def test_config_loader():

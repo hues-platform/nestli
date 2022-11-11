@@ -27,10 +27,10 @@ The config file is a yaml file in which the simulation parameters are set. It fi
 
     OUTPUT_FOLDER_PATH: ""
     START: '2022-05-12'
-    DURATION: 864000
+    DURATION: 10
     RESOLUTION: 60
 
-For an EnergyPlus model the DURATION has to be a multiple of 86400 and the RESOLUTION must be the same as the model resolution.
+The DURATION (days) has to be an integer and the RESOLUTION (seconds) must be the same as the model resolution.
 
 After that all the simulators are specified. 
 A PATH can either be absolute or relative to the config file folder path or if it is in the nestli package you can see the example below.
@@ -42,16 +42,16 @@ A PATH can either be absolute or relative to the config file folder path or if i
     #         PATH specifies the folder where the FMU is contained and NAME the filename.
     #   TABULAR_DATA: This will create a simulator from DATA in tabular form. The supported format is hdf5.
     #         PATH specifies the folder where the .h5 files are contained. The file name must correspond with the variable name of the data it containes.
-    #   NAN_PLACEHOLDER: This simulator will create a NaN value to all connected entities.
-    #         PATH specifies a file which containes all the variables you plan to connect to it.      
+    #   NAN_PLACEHOLDER: This simulator will create a NaN value to all connected entities.    
     #   COLLECTOR: This is a simple Data collector. It will save the data of all signals you connect to it and write them to a file after the simulation.
     #         No additional information is neccessary.
+    #   PYTHON_FUNCTION: This will create a controller from a python function. You specify the Path to the python class.
     
     SIMULATORS: 
         SIM1:
             NAME: "UMAR"
             TYPE: "FMU"
-            PATH: "$nestli$./simulators/ressources/fmu"
+            PATH: "$nestli$./simulators/resources/fmu"
             NUMBER_OF_MODELS: 5
 
 

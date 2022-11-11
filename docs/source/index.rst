@@ -6,11 +6,11 @@ Welcome to nestli's documentation!
 
    readme
    installation
+   components
+   execution_of_simulation
    usage
+   releasenotes
+   references
+   annex
 
 
-
-Indices and tables
-==================
-* :ref:`modindex`
-* :ref:`search`

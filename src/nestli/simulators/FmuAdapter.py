@@ -123,6 +123,8 @@ class FmuAdapter(mosaik_api.Simulator):
                 for attr, vals in attrs.items():
                     for val in vals.values():
                         self.set_values(eid, {attr: val}, "input")
+                if "Simulation_Time" in self.attrs:
+                    self.set_values(eid, {"Simulation_Time": t}, "input")
                 self._entities[eid].doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
         self.data_cache = {}
         return t + self.step_size
@@ -162,6 +164,7 @@ class FmuAdapter(mosaik_api.Simulator):
         attr_list = list(self.translation_table["input"].keys())
         out_list = list(self.translation_table["output"].keys())
         attr_list.extend(out_list)
+        self.attrs = attr_list
 
         self.meta["models"][self.instance_name] = {"public": True, "params": list(self.translation_table["parameter"].keys()), "attrs": attr_list}
 
@@ -203,8 +206,11 @@ class FmuAdapter(mosaik_api.Simulator):
             idf_text = idf.read()
         idf_text = idf_text.decode("ISO-8859-1")
         idf_text = idf_text.replace("2019,                        !- Begin Year", f"{self.start_date.year},                        !- Begin Year")
-        idf_text = idf_text.replace(
-            "2021,                        !- End Year", f"{(self.start_date + dt.timedelta(seconds=self.duration)).year},                        !- End Year"
-        )
+        idf_text = idf_text.replace("1,                       !- Begin Month", f"{self.start_date.month},                        !- Begin Month")
+        idf_text = idf_text.replace("1,                       !- Begin Day of Month", f"{self.start_date.day},                        !- Begin Day of Month")
+        idf_text = idf_text.replace("2021,                        !- End Year", f"{(self.start_date + dt.timedelta(seconds=self.duration-1)).year},                        !- End Year")
+        idf_text = idf_text.replace("12,                      !- End Month", f"{(self.start_date + dt.timedelta(seconds=self.duration-1)).month},                        !- End Month")
+        idf_text = idf_text.replace("31,                      !- End Day of Month", f"{(self.start_date + dt.timedelta(seconds=self.duration-1)).day},                        !- End Day of Month")
+        idf_text = idf_text.replace("Sunday,                        !- Day of Week for Start Day Tuesday", f"{(self.start_date).strftime('%A')},                        !- Day of Week for Start Day Tuesday")
         with open(self.uri_to_extracted_fmu + "/resources/UMAR.idf", "wb") as idf:
             idf.write(idf_text.encode("ISO-8859-1"))

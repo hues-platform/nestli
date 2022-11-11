@@ -1,3 +1,5 @@
+cd to this directory
+
 sphinx-build -b latex . ./_latex
 cd _latex
 .\make

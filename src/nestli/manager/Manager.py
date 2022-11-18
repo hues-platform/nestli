@@ -55,10 +55,8 @@ class Manager:
                     start_date=start_date,
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
-                # ToDo
-                # if data already in attributes["PATH"], build df
-                # otherwise request and unzip and save, then build df
-                # give df and date to simulator
+                if not os.path.exists(attributes["PATH"]):
+                    os.mkdir(attributes["PATH"])
                 if not any(fname.endswith(".h5") for fname in os.listdir(attributes["PATH"])):
                     download_and_unzip(DATA_DOWNLOAD, attributes["PATH"])
                 simulators[attributes["NAME"]] = self.world.start(

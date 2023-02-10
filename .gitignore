@@ -102,6 +102,7 @@ authorization.json
 
 #FMU folders
 UMAR/
+UMAR2022/
 PREPROCESS/
 PREPROCESS_ONLINE/
 FMUCTRL/

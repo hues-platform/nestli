@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-
+import datetime as dt
 
 class PythonController:
     """
@@ -29,7 +29,7 @@ class PythonController:
 
     def control(
         self,
-        current_simulation_time,
+        current_simulation_time : dt.datetime,
         Weather_DryBulb_Temperature,
         Weather_DewPoint_Temperature,
         Weather_Relative_Humidity,
@@ -51,7 +51,7 @@ class PythonController:
         Inputs are values communicated and coordinated by mosaik.
         Inputs:
         self                            : Previous state of the controller
-        current_simulation_time         : The cumulative time after the start of the simulation (seconds)
+        current_simulation_time         : The time (datetime object)
         Weather_DryBulb_Temperature     : Current outdoor drybulb temperature
         Weather_DewPoint_Temperature    : Current outdoor dewpoint temperature
         Weather_Relative_Humidity       : Current outdoor relative humidity
@@ -93,7 +93,7 @@ class PythonController:
         # An example of overwriting/controlling the setpoint temperature for rooms R272, R273 and R274:
         # In this example the controller keeps the indoor air temperature near the lower comfort bound
         # The controller executes every 15 minutes and holds the last value in between executions
-        if np.mod(current_simulation_time, 900) == 0:
+        if np.mod(current_simulation_time.minute, 15) == 0:
 
             if R272_Air_Temperature < SetPoint_LowerBound:
                 self.R272_SetPoint_Override = 32

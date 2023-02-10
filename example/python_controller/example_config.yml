@@ -18,10 +18,12 @@ RESOLUTION: 60
 SIMULATORS: 
   SIM1:
     NAME: "UMAR"
+    FMU_NAME: "UMAR"
     TYPE: "FMU"
     PATH: "$nestli$./simulators/resources"
   SIM2:
     NAME: "PREPROCESS"
+    FMU_NAME: "PREPROCESS"
     TYPE: "FMU"
     PATH: "$nestli$./simulators/resources"
   SIM3:

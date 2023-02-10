@@ -61,7 +61,7 @@ class TabularData(mosaik_api.Simulator):
         return entities
 
     def step(self, time, inputs, max_advance):
-        self.logger.info(f"Data Step: {self.start_date + dt.timedelta(seconds=time)}")
+        self.logger.debug(f"Data Step: {self.start_date + dt.timedelta(seconds=time)}")
 
         data = self.data
         if self.next_index >= 0:

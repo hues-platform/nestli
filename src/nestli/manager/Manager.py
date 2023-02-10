@@ -43,16 +43,20 @@ class Manager:
         """Initializes the different simulators according to the config."""
         simulators = {}
         start_date = dt.datetime.strptime(self.cfg["START"], r"%Y-%m-%d")
+        counter = 0
         for sim, attributes in self.cfg["SIMULATORS"].items():
             if attributes["TYPE"] == "FMU":
+                start_at_zero = False if "UMAR" in attributes["FMU_NAME"] else True
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
                     work_dir=attributes["PATH"],
-                    fmu_name=attributes["NAME"],
-                    model_name=attributes["NAME"],
+                    fmu_name=attributes["FMU_NAME"],
+                    model_name=attributes["FMU_NAME"],
                     instance_name=attributes["TYPE"] + "_Instance",
                     duration=self.cfg["DURATION"] * 86400,
                     start_date=start_date,
+                    start_at_zero=start_at_zero,
+                    unique_num=counter,
                 )
             elif attributes["TYPE"] == "TABULAR_DATA":
                 if not os.path.exists(attributes["PATH"]):
@@ -68,6 +72,7 @@ class Manager:
                 simulators[attributes["NAME"]] = self.world.start(
                     attributes["TYPE"],
                     start_date=start_date,
+                    wait=attributes["WAIT"]
                 )
             elif attributes["TYPE"] == "NAN_PLACEHOLDER":
                 simulators[attributes["NAME"]] = self.world.start(
@@ -90,8 +95,14 @@ class Manager:
                     start_date=start_date,
                     path=attributes["Controller"],
                 )
+            elif attributes["TYPE"] == "DATABASE_DATA_FORECAST":
+                simulators[attributes["NAME"]] = self.world.start(
+                    attributes["TYPE"],
+                    start_date=start_date,
+                )
             else:
                 raise NotImplementedError(f"The Simulator {attributes['TYPE']} has not been implemented.")
+            counter = counter + 1
         return simulators
 
     def initialize_models(self) -> Dict:
@@ -116,6 +127,8 @@ class Manager:
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Monitor()
             elif attributes["TYPE"] == "PYTHON_FUNCTION":
                 models[attributes["NAME"]] = self.simulators[attributes["NAME"]].PythonFunction.create(num_of_models)
+            elif attributes["TYPE"] == "DATABASE_DATA_FORECAST":
+                models[attributes["NAME"]] = self.simulators[attributes["NAME"]].Data.create(num_of_models)
             else:
                 raise NotImplementedError(f"The SimulatorType {attributes['TYPE']} has not been defined.")
         return models
@@ -169,5 +182,7 @@ class Manager:
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
         logger = logging.getLogger()
+        if logger.hasHandlers():
+            logger.handlers.clear()
         logger.addHandler(file_handler)
         logger.setLevel(logging.DEBUG)

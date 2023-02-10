@@ -36,6 +36,8 @@ class FmuAdapter(mosaik_api.Simulator):
         visible=False,
         duration=1,
         start_date=None,
+        start_at_zero=True,
+        unique_num=0,
     ):
 
         if work_dir is None or model_name is None or fmu_name is None or instance_name is None:
@@ -61,11 +63,13 @@ class FmuAdapter(mosaik_api.Simulator):
         self.visible = visible
         self.duration = duration
         self.stop_time = self.start_time + duration
+        self.start_at_zero = start_at_zero
+        self.unique_num = unique_num
 
         # Extracting files from the .fmu (only needed at first use, but will not cause error later)
         path_to_fmu = os.path.join(self.work_dir, self.fmu_name + ".fmu")
         self.uri_to_extracted_fmu = extract(path_to_fmu, os.path.join(self.work_dir, self.fmu_name))
-        if self.model_name == "UMAR":
+        if "UMAR" in self.model_name:
             self.modify_idf()
         self.model_description = read_model_description(path_to_fmu)
         self.vrs = {}
@@ -94,13 +98,13 @@ class FmuAdapter(mosaik_api.Simulator):
                 guid=self.model_description.guid,
                 unzipDirectory=self.uri_to_extracted_fmu,
                 modelIdentifier=self.model_description.coSimulation.modelIdentifier,
-                instanceName=self.instance_name,
+                instanceName=self.instance_name + str(self.unique_num),
                 fmiCallLogger=None,
             )
             self._entities[eid] = fmu
             callbacks = get_callbacks_logger(self.logging_on)
             self._entities[eid].instantiate(visible=self.visible, loggingOn=self.logging_on, callbacks=callbacks)
-            if self.model_name != "UMAR":  # Other fmu do not like starting at something else then 0. But UMAR has no start at start_time
+            if self.start_at_zero:  # Other fmu do not like starting at something else then 0. But UMAR has no start at start_time
                 self.stop_time = self.stop_time - self.start_time
                 self.start_time = 0
 
@@ -113,7 +117,7 @@ class FmuAdapter(mosaik_api.Simulator):
         return entities
 
     def step(self, t, inputs, max_advance):
-        self.logger.info(f"FMU Step: {self.start_date + dt.timedelta(seconds=t)}, {self.model_name}, {t}")
+        self.logger.debug(f"FMU Step: {self.start_date + dt.timedelta(seconds=t)}, {self.model_name}, {t}")
         if inputs is None or inputs == {}:
             for fmu in self._entities.values():
                 fmu.doStep((int)(t * self.step_factor + self.start_time), self.step_size * self.step_factor)
@@ -202,7 +206,7 @@ class FmuAdapter(mosaik_api.Simulator):
 
     def modify_idf(self):
         idf_text = ""
-        with open(self.uri_to_extracted_fmu + "/resources/UMAR.idf", "rb") as idf:
+        with open(self.uri_to_extracted_fmu + f"/resources/{self.fmu_name}.idf", "rb") as idf:
             idf_text = idf.read()
         idf_text = idf_text.decode("ISO-8859-1")
         idf_text = idf_text.replace("2019,                        !- Begin Year", f"{self.start_date.year},                        !- Begin Year")
@@ -212,5 +216,5 @@ class FmuAdapter(mosaik_api.Simulator):
         idf_text = idf_text.replace("12,                      !- End Month", f"{(self.start_date + dt.timedelta(seconds=self.duration-1)).month},                        !- End Month")
         idf_text = idf_text.replace("31,                      !- End Day of Month", f"{(self.start_date + dt.timedelta(seconds=self.duration-1)).day},                        !- End Day of Month")
         idf_text = idf_text.replace("Sunday,                        !- Day of Week for Start Day Tuesday", f"{(self.start_date).strftime('%A')},                        !- Day of Week for Start Day Tuesday")
-        with open(self.uri_to_extracted_fmu + "/resources/UMAR.idf", "wb") as idf:
+        with open(self.uri_to_extracted_fmu + f"/resources/{self.fmu_name}.idf", "wb") as idf:
             idf.write(idf_text.encode("ISO-8859-1"))

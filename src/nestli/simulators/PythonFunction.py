@@ -81,7 +81,7 @@ class PythonFunction(mosaik_api.Simulator):
 
     def step(self, t, inputs, max_advance):
         # You can add debug statements with the logger as follows
-        self.logger.info(f"Controller Python Step: {self.current_simulation_time}")
+        self.logger.debug(f"Controller Python Step: {self.current_simulation_time}")
         self.input_data = {}
         data = inputs.get(self.eid, {})
         for attr, values in data.items():
@@ -107,7 +107,7 @@ class PythonFunction(mosaik_api.Simulator):
             R275_SetPoint_Override,
             R276_SetPoint_Override,
         ) = self.controller.control(
-            t,
+            self.current_simulation_time,
             self.input_data["Weather_DryBulb_Temperature"],
             self.input_data["Weather_DewPoint_Temperature"],
             self.input_data["Weather_Relative_Humidity"],

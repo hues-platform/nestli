@@ -1,7 +1,7 @@
 # The following are general parameters for the simulation. 
 # Make sure that the RESOLUTION is the same as in your models.
 OUTPUT_FOLDER_PATH: ""
-START: '2020-12-12'
+START: '2020-07-01'
 DURATION: 7
 RESOLUTION: 60
 
@@ -18,10 +18,12 @@ RESOLUTION: 60
 SIMULATORS: 
   SIM1:
     NAME: "UMAR"
+    FMU_NAME: "UMAR"
     TYPE: "FMU"
     PATH: "$nestli$./simulators/resources"
   SIM2:
     NAME: "PREPROCESS"
+    FMU_NAME: "PREPROCESS"
     TYPE: "FMU"
     PATH: "$nestli$./simulators/resources"
   SIM3:
